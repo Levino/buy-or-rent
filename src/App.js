@@ -7,7 +7,7 @@ import Result from './Result'
 class App extends Component {
   render () {
     return (
-      <Container>
+      <Container fluid>
         <Row>
           <Col>
             <h3>Kaufen oder mieten?</h3>
@@ -15,10 +15,10 @@ class App extends Component {
           </Col>
         </Row>
         <Row>
-          <Col md={4}>
+          <Col style={{padding: '1em'}} md={4}>
             <Form/>
           </Col>
-          <Col md={8}>
+          <Col style={{padding: '1em'}} md={8}>
             <Result/>
           </Col>
         </Row>
