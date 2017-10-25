@@ -43,7 +43,7 @@ export default reduxForm({
     rentPricePerSM: 14,
     buyPricePerSM: 4000,
     periods: 20,
-    investmentReserve: 0,
+    investmentReserve: 1,
     size: 100,
     brokerFee: 2,
     notaryFee: 1,
