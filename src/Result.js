@@ -2,35 +2,35 @@ import React from 'react'
 import {Row} from 'reactstrap';
 import {
   AnnualLoanPayment,
-  AnnualInvestmentPayment, MonthlyLoanPayment
+  AnnualInvestmentPayment, MonthlyLoanPayment, NetPrice, GrossPrice
 } from './selectors'
 
-const ListEntry = ({title, NumberComp}) => [
+const ListEntry = ({title, Component}) => [
   <dt key="title" className="col-sm-3">{title}</dt>,
-  <dd style={{textAlign: 'right'}}key="value" className="col-sm-9"><NumberComp/></dd>
+  <dd style={{textAlign: 'right'}} key="value" className="col-sm-9"><Component/></dd>
 ]
 
-const Result = ({annualPayment, netPrice, grossPrice, monthlyPayment, annualInvestmentPayment}) => {
+const Result = () => {
   const entries = [
-/*    {
+    {
       title: 'Nettopreis',
-      value: moneyString(netPrice)
+      Component: NetPrice
     },
     {
       title: 'Bruttopreis',
-      value: moneyString(grossPrice)
-    },*/
+      Component: GrossPrice
+    },
     {
       title: 'Jährliche Tilgungsrate',
-      NumberComp: AnnualLoanPayment
+      Component: AnnualLoanPayment
     },
     {
       title: 'Monatliche Tilgungsrate',
-      NumberComp: MonthlyLoanPayment
+      Component: MonthlyLoanPayment
     },
     {
       title: 'Jährliche Investitionsrücklage',
-      NumberComp: AnnualInvestmentPayment
+      Component: AnnualInvestmentPayment
     }
   ]
   return <Row>

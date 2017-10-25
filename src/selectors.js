@@ -7,6 +7,12 @@ const moneyString = number => `${number.toLocaleString('de', { currency: 'EUR' }
 
 const getSubState = state => state.form.mainForm.values
 
+const createMoneyComponent = selector => connect(state => (
+  { value: selector(state) }
+))(
+  ({value}) => moneyString(value)
+)
+
 export const monthlyLoanPayment = (state) => {
   const {
     periods,
@@ -17,19 +23,11 @@ export const monthlyLoanPayment = (state) => {
   return (-1 * PMT(interestRate / 100 / 12, periods * 12, equity)).toFixed(2)
 }
 
-export const MonthlyLoanPayment = connect(state => (
-  { monthlyLoanPayment: monthlyLoanPayment(state) }
-))(
-  ({monthlyLoanPayment}) => moneyString(monthlyLoanPayment)
-)
+export const MonthlyLoanPayment = createMoneyComponent(monthlyLoanPayment)
 
 export const annualLoanPayment = state => 12 * monthlyLoanPayment(state)
 
-export const AnnualLoanPayment = connect(state => (
-  { annualLoanPayment: annualLoanPayment(state) }
-))(
-  ({annualLoanPayment}) => moneyString(annualLoanPayment)
-)
+export const AnnualLoanPayment = createMoneyComponent(annualLoanPayment)
 
 export const annualInvestmentPayment = state => {
   const {
@@ -38,11 +36,7 @@ export const annualInvestmentPayment = state => {
   return investmentReserve / 100 * netPrice(state)
 }
 
-export const AnnualInvestmentPayment = connect(state => (
-  { annualInvestmentPayment: annualInvestmentPayment(state) }
-))(
-  ({annualInvestmentPayment}) => moneyString(annualInvestmentPayment)
-)
+export const AnnualInvestmentPayment = createMoneyComponent(annualInvestmentPayment)
 
 export const netPrice = (state) => {
   const {
@@ -52,6 +46,8 @@ export const netPrice = (state) => {
   return buyPricePerSM * size
 }
 
+export const NetPrice = createMoneyComponent(netPrice)
+
 export const grossPrice = (state) => {
   const {
     notaryFee,
@@ -60,3 +56,5 @@ export const grossPrice = (state) => {
   } = getSubState(state)
   return netPrice(state) * (1 + (notaryFee + brokerFee + propertyPurchaseTax) / 100)
 }
+
+export const GrossPrice = createMoneyComponent(grossPrice)
