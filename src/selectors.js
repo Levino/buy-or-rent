@@ -17,6 +17,12 @@ export const monthlyLoanPayment = (state) => {
   return (-1 * PMT(interestRate / 100 / 12, periods * 12, equity)).toFixed(2)
 }
 
+export const MonthlyLoanPayment = connect(state => (
+  { monthlyLoanPayment: monthlyLoanPayment(state) }
+))(
+  ({monthlyLoanPayment}) => moneyString(monthlyLoanPayment)
+)
+
 export const annualLoanPayment = state => 12 * monthlyLoanPayment(state)
 
 export const AnnualLoanPayment = connect(state => (
@@ -31,6 +37,12 @@ export const annualInvestmentPayment = state => {
   } = getSubState(state)
   return investmentReserve / 100 * netPrice(state)
 }
+
+export const AnnualInvestmentPayment = connect(state => (
+  { annualInvestmentPayment: annualInvestmentPayment(state) }
+))(
+  ({annualInvestmentPayment}) => moneyString(annualInvestmentPayment)
+)
 
 export const netPrice = (state) => {
   const {
