@@ -1,27 +1,37 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {Row, Col} from 'reactstrap';
-import {annualPayment, grossPrice, netPrice} from './selectors'
+import {Row} from 'reactstrap';
+import {AnnualLoanPayment, grossPrice, netPrice, monthlyLoanPayment, annualInvestmentPayment} from './selectors'
 
-const ListEntry = ({title, value}) => [
+const ListEntry = ({title, NumberComp}) => [
   <dt key="title" className="col-sm-3">{title}</dt>,
-  <dd key="value" className="col-sm-9">{value}</dd>
+  <dd key="value" className="col-sm-9"><NumberComp/></dd>
 ]
 
-const Result = ({annualPayment, netPrice, grossPrice}) => {
+const moneyString = number => `${number.toLocaleString('de', { currency: 'EUR'})} €`
+
+const Result = ({annualPayment, netPrice, grossPrice, monthlyPayment, annualInvestmentPayment}) => {
   const entries = [
-    {
+/*    {
       title: 'Nettopreis',
-      value: netPrice
+      value: moneyString(netPrice)
     },
     {
       title: 'Bruttopreis',
-      value: grossPrice
+      value: moneyString(grossPrice)
+    },*/
+    {
+      title: 'Jährliche Tilgungsrate',
+      NumberComp: AnnualLoanPayment
+    }/*,
+    {
+      title: 'Monatliche Tilgungsrate',
+      value: moneyString(monthlyPayment)
     },
     {
-      title: 'Jährliche Belastung',
-      value: annualPayment
-    }
+      title: 'Jährliche Investitionsrücklage',
+      value: annualInvestmentPayment
+    }*/
   ]
   return <Row>
     {entries.map((entry, key) => <ListEntry key={key} {...entry} />)}
@@ -30,9 +40,10 @@ const Result = ({annualPayment, netPrice, grossPrice}) => {
 
 const mapStateToProps = state => {
   return {
-    annualPayment: annualPayment(state),
     netPrice: netPrice(state),
-    grossPrice: grossPrice(state)
+    grossPrice: grossPrice(state),
+    monthlyPayment: monthlyLoanPayment(state),
+    annualInvestmentPayment: annualInvestmentPayment(state)
   }
 }
 
