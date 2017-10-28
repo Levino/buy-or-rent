@@ -2,7 +2,7 @@ import React from 'react'
 import {Row} from 'reactstrap';
 import {
   AnnualLoanPayment,
-  AnnualInvestmentPayment, MonthlyLoanPayment, NetPrice, GrossPrice
+  AnnualInvestmentPayment, MonthlyLoanPayment, NetPrice, GrossPrice, YearlyPaymentBuyer
 } from './selectors'
 
 const ListEntry = ({title, Component}) => [
@@ -31,6 +31,10 @@ const Result = () => {
     {
       title: 'Jährliche Investitionsrücklage',
       Component: AnnualInvestmentPayment
+    },
+    {
+      title: 'Jährliche Belastung Kauf',
+      Component: YearlyPaymentBuyer
     }
   ]
   return <Row>

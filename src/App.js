@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Container, Row, Col} from 'reactstrap'
-import logo from './logo.svg';
+import LoanPayments from './LoanPayments'
 import './App.css';
 import Form from './Form'
 import Result from './Result'
@@ -20,6 +20,11 @@ class App extends Component {
           </Col>
           <Col style={{padding: '1em'}} md={8}>
             <Result/>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={6}>
+            <LoanPayments />
           </Col>
         </Row>
       </Container>

@@ -29,6 +29,7 @@ const MainForm = () => (
         <CustomFormGroup addon="% vom Kaufpreis" label="Notarkosten" name="notaryFee"/>
         <CustomFormGroup addon="% vom Kaufpreis" label="Grunderwerbsteuer" name="propertyPurchaseTax"/>
         <CustomFormGroup addon="% vom Kaufpreis" label="Maklergebühr" name="brokerFee"/>
+        <CustomFormGroup addon="%" label="Äquivalenzrendite" name="equivalentYield"/>
       </Col>
     </Row>
   </Form>
@@ -47,6 +48,7 @@ export default reduxForm({
     size: 100,
     brokerFee: 2,
     notaryFee: 1,
-    propertyPurchaseTax: 6.5
+    propertyPurchaseTax: 6.5,
+    equivalentYield: 5
   }
 })(MainForm)
