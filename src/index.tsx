@@ -1,14 +1,14 @@
-import React from 'react';
+import * as React from 'react';
 import { Provider } from 'react-redux'
 import 'bootstrap/dist/css/bootstrap.css'
-import ReactDOM from 'react-dom';
+import * as ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import { equivalentRate } from "./equivalentRate"
 import { createStore, combineReducers } from 'redux'
 import { reducer as formReducer } from 'redux-form'
-import {getCalculatedEquivalentRate} from "./selectors"
+
 
 const rootReducer = combineReducers({
   // ...your other reducers here
@@ -17,12 +17,11 @@ const rootReducer = combineReducers({
   equivalentRate,
   form: formReducer
 })
-
+declare var window:any;
 const store = createStore(rootReducer,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 )
 
-console.log(getCalculatedEquivalentRate(store.getState()))
 
 ReactDOM.render(
   <Provider store={store}>

@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { Row, Col, Table } from 'reactstrap'
 import {
   MonthlyLoanPayment, AnnualLoanPayment, AnnualInvestmentPayment,
@@ -6,9 +6,9 @@ import {
 } from '../selectors'
 
 const TableRow = ({title, PerYear, PerMonth, result}) => <tr>
-  <td style={{fontWeight: result ? 'bold' : null }} scope="row" key="title">{title}</td>
-  <td style={{textAlign: 'right', fontWeight: result ? 'bold' : null }} key="perMonth"><PerMonth/></td>
-  <td style={{textAlign: 'right', fontWeight: result ? 'bold' : null }} key="perYear"><PerYear/></td>
+  <td style={{fontWeight: result ? 'bold' : 'normal' }} scope="row" key="title">{title}</td>
+  <td style={{textAlign: 'right', fontWeight: result ? 'bold' : 'normal' }} key="perMonth"><PerMonth/></td>
+  <td style={{textAlign: 'right', fontWeight: result ? 'bold' : 'normal' }} key="perYear"><PerYear/></td>
 </tr>
 
 const PaymentsRepaymentPeriod = () => {
@@ -16,12 +16,14 @@ const PaymentsRepaymentPeriod = () => {
     {
       title: 'Tilgung',
       PerMonth: MonthlyLoanPayment,
-      PerYear: AnnualLoanPayment
+      PerYear: AnnualLoanPayment,
+        result: false
     },
     {
       title: 'Investitionsrücklage',
       PerYear: AnnualInvestmentPayment,
-      PerMonth: MonthlyInvestmentPayment
+      PerMonth: MonthlyInvestmentPayment,
+        result: false
     },
     {
       title: 'Summe',
@@ -30,7 +32,7 @@ const PaymentsRepaymentPeriod = () => {
       result: true
     }
   ]
-  const Content = () => <Table size="sm">
+  const Content = () => (<Table size="sm">
       <thead>
         <tr>
           <th scope="col">Verwendung</th>
@@ -41,7 +43,7 @@ const PaymentsRepaymentPeriod = () => {
       <tbody>
         {entries.map((entry, key) => <TableRow key={key} {...entry} />)}
       </tbody>
-    </Table>
+    </Table>);
   const Heading = () => <h3>Zahlungen Käufer Tilgungsphase</h3>
   return <Row><Col>
     <Heading key="heading"/>
@@ -54,7 +56,8 @@ const PaymentsDyingPeriod = () =>  {
     {
       title: 'Investitionsrücklage',
       PerYear: AnnualInvestmentPayment,
-      PerMonth: MonthlyInvestmentPayment
+      PerMonth: MonthlyInvestmentPayment,
+        result: false
     },
     {
       title: 'Summe',

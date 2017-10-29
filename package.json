@@ -4,22 +4,33 @@
   "private": true,
   "dependencies": {
     "bootstrap": "4.0.0-beta.2",
+    "lodash": "^4.17.4",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.6",
-    "react-scripts": "1.0.14",
+    "react-scripts-ts": "2.8.0",
     "react-transition-group": "^2.2.1",
     "reactstrap": "^4.8.0",
     "redux": "^3.7.2",
-    "redux-form": "^7.1.1",
-    "surge": "^0.19.0"
+    "redux-form": "^7.1.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build && cp CNAME build/CNAME",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
+    "start": "react-scripts-ts start",
+    "build": "react-scripts-ts build && cp CNAME build/CNAME",
+    "test": "react-scripts-ts test --env=jsdom",
+    "eject": "react-scripts-ts eject",
     "deploy": "surge -p ./build",
     "predeploy": "npm run build"
+  },
+  "devDependencies": {
+    "@types/jest": "^21.1.5",
+    "@types/lodash": "^4.14.80",
+    "@types/node": "^8.0.47",
+    "@types/react": "^16.0.18",
+    "@types/react-dom": "^16.0.2",
+    "@types/react-redux": "^5.0.12",
+    "@types/reactstrap": "^4.6.4",
+    "@types/redux-form": "^7.0.8",
+    "surge": "^0.19.0"
   }
 }

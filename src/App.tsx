@@ -1,12 +1,10 @@
-import React, {Component} from 'react';
+import * as React from 'react';
 import {Container, Row, Col} from 'reactstrap'
 import LoanPayments from './LoanPayments'
 import './App.css';
 import Form from './Form'
 import Result from './Result/index'
-class App extends Component {
-  render () {
-    return (
+const App = () =>
       <Container fluid>
         <Row>
           <Col>
@@ -28,8 +26,5 @@ class App extends Component {
           </Col>
         </Row>
       </Container>
-    )
-  }
-}
 
 export default App;

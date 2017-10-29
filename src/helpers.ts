@@ -1,3 +1,5 @@
+import { times } from 'lodash'
+
 export const PMT = (rate, nper, pv, fv = 0, type = 0) => {
   if (rate === 0) return -(pv + fv) / nper
 
@@ -10,12 +12,6 @@ export const PMT = (rate, nper, pv, fv = 0, type = 0) => {
 
   return pmt
 }
-export const moneyString = number => {
-  if (!number) {
-    number = 0
-  }
-  return `${(Math.round(number * 100) / 100).toLocaleString('de', { currency: 'EUR', minimumFractionDigits: 2 })} €`
-}
 
 export const monthlyLoanPayment = ({ interestRate, loan, years }) => -1 * PMT(interestRate / 12, years * 12, loan)
 
@@ -25,11 +21,11 @@ export const loanPayments = ({ interestRate, loan, years }) => {
   let loanAtBeginningOfYear = loan
   let loanAtEndOfYear
   const amountMonthlyLoanPayment = monthlyLoanPayment({ interestRate, loan, years })
-  return [ ...Array(years).keys() ].map(year => {
+  return times(years).map(year => {
     let loanAtBeginningOfMonth = loanAtBeginningOfYear
     let loanAtEndOfMonth
     let yearlyInterest = 0
-    const monthlyPayments = [ ...Array(12).keys() ].map(() => {
+    const monthlyPayments = times(12).map(() => {
       const interest = loanAtBeginningOfMonth * interestRate / 12
       yearlyInterest += interest
       loanAtEndOfMonth = loanAtBeginningOfMonth - amountMonthlyLoanPayment + interest
@@ -55,7 +51,7 @@ export const loanPayments = ({ interestRate, loan, years }) => {
 }
 
 const valueOfPropertyByYear = ({ valueAtBeginning, periods, gainPerPeriod }) => {
-  return [ ...Array(periods).keys() ].map((period) => (
+  return times(periods).map((period) => (
     {
       year: 2018 + period,
       value: valueAtBeginning * Math.pow((1 + gainPerPeriod), period)
@@ -78,7 +74,7 @@ export const buyerValues = ({ interestRate, loan, repaymentPeriods, timeToDeath,
   }))
 }
 
-const yearlyStockValues = ({ stockValueAtBeginning, monthlyRate, interestRate }) => [ ...Array(12).keys() ].reduce(({
+const yearlyStockValues = ({ stockValueAtBeginning, monthlyRate, interestRate }) => times(12).reduce(({
                                                                                                                       stockGain,
                                                                                                                       stockValue
                                                                                                                     }) => {
@@ -91,7 +87,7 @@ const yearlyStockValues = ({ stockValueAtBeginning, monthlyRate, interestRate })
 
 const tenantValues = ({ yearlyRentIncrease, rentAtBeginning, periods, stockValueAtBeginning, monthlyPaymentPhase1, monthlyPaymentPhase2, equivalentRate, phase1Periods }) => {
   let stockValue = stockValueAtBeginning
-  return [ ...Array(periods).keys() ].map(period => {
+  return times(periods).map(period => {
     const yearlyRent = rentAtBeginning * Math.pow((1 + yearlyRentIncrease), period)
     const monthlyRent = yearlyRent / 12
     let monthlyInvestment

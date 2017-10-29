@@ -1,11 +1,10 @@
-import React from 'react'
+import * as React from 'react'
 import { Table } from 'reactstrap'
 import { getAllValues } from './selectors'
 import { connect } from 'react-redux'
-import { moneyString } from './helpers'
+import { moneyString } from './helperComponents'
 
-const LoanPaymentsComponent = ({allValues}) => (
-  <Table size="sm" bordered>
+const LoanPaymentsComponent: any = ({allValues}) => (<Table size="sm" bordered>
     <thead>
     <tr>
       <th/>
@@ -55,10 +54,12 @@ const LoanPaymentsComponent = ({allValues}) => (
     }
     </tbody>
   </Table>
-)
+);
 
-const mapStateToProps = state => {
-  return {allValues: getAllValues(state)}
+const mapStateToProps = (state: any) => {
+    return {
+        allValues: getAllValues(state)
+    }
 }
 
 export default connect(mapStateToProps)(LoanPaymentsComponent)
