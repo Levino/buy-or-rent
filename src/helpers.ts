@@ -214,9 +214,9 @@ export const sum = (from: number, to: number, fn: (i: number) => number) : numbe
     return times(to - from + 1, (value) => value + from).reduce((acc, value) => acc + fn(value), 0)
 }
 
-const amountAtEndOfPeriod = (amountAtBeginning: number, interestRate: number, paymentPerPeriod: number): number => amountAtBeginning * (1 + interestRate) - paymentPerPeriod
+const amountAtEndOfPeriod = memoize((amountAtBeginning: number, interestRate: number, paymentPerPeriod: number): number => amountAtBeginning * (1 + interestRate) - paymentPerPeriod)
 
-export const restOfLoan = memoize((paymentPerPeriod: number,
+export const restOfLoan = (paymentPerPeriod: number,
                            loanAmount: number,
                            interestRate: number,
                            period: number): number => {
@@ -224,4 +224,4 @@ export const restOfLoan = memoize((paymentPerPeriod: number,
         return amountAtEndOfPeriod(loanAmount, interestRate, paymentPerPeriod)
     }
     return restOfLoan(paymentPerPeriod, amountAtEndOfPeriod(loanAmount, interestRate, paymentPerPeriod), interestRate, period -1)
-})
+}
