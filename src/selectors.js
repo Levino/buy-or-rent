@@ -115,3 +115,17 @@ const getAbsoluteNotaryFee = state => {
 }
 
 export const AbsoluteNotaryFee = createMoneyComponent(getAbsoluteNotaryFee)
+
+const getRentPerYear = state => {
+  const {
+    size,
+    rentPricePerSM
+  } = getSubState(state)
+  return 12 * size * rentPricePerSM
+}
+
+export const RentPerYear = createMoneyComponent(getRentPerYear)
+
+const getRentPerMonth = state => getRentPerYear(state)/12
+
+export const RentPerMonth = createMoneyComponent(getRentPerMonth)

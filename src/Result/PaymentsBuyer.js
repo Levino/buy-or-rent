@@ -11,7 +11,7 @@ const TableRow = ({title, PerYear, PerMonth, result}) => <tr>
   <td style={{textAlign: 'right', fontWeight: result ? 'bold' : null }} key="perYear"><PerYear/></td>
 </tr>
 
-const PurchaseCost = () => {
+const PaymentsRepaymentPeriod = () => {
   const entries = [
     {
       title: 'Tilgung',
@@ -49,4 +49,43 @@ const PurchaseCost = () => {
   </Col></Row>
 }
 
-export default PurchaseCost
+const PaymentsDyingPeriod = () =>  {
+  const entries = [
+    {
+      title: 'Investitionsrücklage',
+      PerYear: AnnualInvestmentPayment,
+      PerMonth: MonthlyInvestmentPayment
+    },
+    {
+      title: 'Summe',
+      PerYear: AnnualInvestmentPayment,
+      PerMonth: MonthlyInvestmentPayment,
+      result: true
+    }
+  ]
+  const Content = () => <Table size="sm">
+    <thead>
+    <tr>
+      <th scope="col">Verwendung</th>
+      <th style={{textAlign: 'right'}} scope="col">monatlich</th>
+      <th style={{textAlign: 'right'}} scope="col">jährlich</th>
+    </tr>
+    </thead>
+    <tbody>
+    {entries.map((entry, key) => <TableRow key={key} {...entry} />)}
+    </tbody>
+  </Table>
+  const Heading = () => <h3>Zahlungen Käufer Sterbephase</h3>
+  return <Row><Col>
+    <Heading key="heading"/>
+    <Content key="content"/>
+  </Col></Row>
+}
+
+const PaymentsBuyer = () => <Row><Col>
+  <PaymentsRepaymentPeriod/>
+</Col><Col>
+  <PaymentsDyingPeriod/>
+</Col></Row>
+
+export default PaymentsBuyer
