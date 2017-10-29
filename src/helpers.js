@@ -89,16 +89,16 @@ const yearlyStockValues = ({ stockValueAtBeginning, monthlyRate, interestRate })
   }
 }, { stockGain: 0, stockValue: stockValueAtBeginning })
 
-const tenantValues = ({ yearlyRentIncrease, rentAtBeginning, periods, stockValueAtBeginning, monthlyPayment, equivalentRate, paymentPeriods }) => {
+const tenantValues = ({ yearlyRentIncrease, rentAtBeginning, periods, stockValueAtBeginning, monthlyPaymentPhase1, monthlyPaymentPhase2, equivalentRate, phase1Periods }) => {
   let stockValue = stockValueAtBeginning
   return [ ...Array(periods).keys() ].map(period => {
     const yearlyRent = rentAtBeginning * Math.pow((1 + yearlyRentIncrease), period)
     const monthlyRent = yearlyRent / 12
     let monthlyInvestment
-    if (period < paymentPeriods) {
-      monthlyInvestment = monthlyPayment - monthlyRent
+    if (period < phase1Periods) {
+      monthlyInvestment = monthlyPaymentPhase1 - monthlyRent
     } else {
-      monthlyInvestment = - monthlyRent
+      monthlyInvestment = monthlyPaymentPhase2 - monthlyRent
     }
     const yearlyStockValuesObject = yearlyStockValues({
       stockValueAtBeginning: stockValue,
@@ -130,15 +130,17 @@ export const allValues = ({
                             yearlyRentIncrease,
                             equivalentRate,
                             equity,
-  monthlyPayment
+  monthlyPaymentRepayment,
+  monthlyPaymentAfterRepayment
                           }) => {
 
   const tenantValuesArray = tenantValues({
     yearlyRentIncrease,
     rentAtBeginning,
     periods: timeToDeath,
-    monthlyPayment,
-    paymentPeriods: repaymentPeriods,
+    monthlyPaymentPhase1: monthlyPaymentRepayment,
+    monthlyPaymentPhase2: monthlyPaymentAfterRepayment,
+    phase1Periods: repaymentPeriods,
     equivalentRate,
     stockValueAtBeginning: equity
   })
@@ -157,4 +159,56 @@ export const allValues = ({
     ...value,
     ...tenantValuesArray[ index ]
   }))
+}
+
+export const calculateEquivalentRate = ({
+  interestRate,
+  loan,
+  repaymentPeriods,
+  timeToDeath,
+  transactionCost,
+  timeBetweenTransactions,
+  valueAtBeginning,
+  equityPriceIncrease,
+  rentAtBeginning,
+  yearlyRentIncrease,
+  equity,
+  monthlyPaymentRepayment,
+  monthlyPaymentAfterRepayment
+}) => {
+  let upperBoundary = 1
+  let lowerBoundary = 0
+  const allValuesForRate = (equivalentRate) => allValues({
+    interestRate,
+    loan,
+    repaymentPeriods,
+    timeToDeath,
+    transactionCost,
+    timeBetweenTransactions,
+    valueAtBeginning,
+    equityPriceIncrease,
+    rentAtBeginning,
+    yearlyRentIncrease,
+    equity,
+    monthlyPaymentRepayment,
+    monthlyPaymentAfterRepayment,
+    equivalentRate
+  })
+  const error = (allValuesArray) => {
+    const {networth, stockValue} = allValuesArray[timeToDeath]
+    return Math.abs(networth - stockValue)
+  }
+  let equivalentRate = 0.5
+  let lastAllValuesArray = allValuesForRate(equivalentRate)
+  while (Math.abs(error(lastAllValuesArray)) >= 100) {
+    if (error(lastAllValuesArray) < 0) {
+      upperBoundary = (lowerBoundary + upperBoundary) / 2
+    } else {
+      lowerBoundary = (upperBoundary + lowerBoundary) / 2
+    }
+    console.log(upperBoundary, lowerBoundary, error(lastAllValuesArray))
+    equivalentRate = (lowerBoundary + upperBoundary) / 2
+    lastAllValuesArray = allValuesForRate(equivalentRate)
+  }
+  return equivalentRate
 }
