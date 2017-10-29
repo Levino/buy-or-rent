@@ -1,16 +1,15 @@
 import {connect} from 'react-redux';
 
 import {monthlyLoanPayment, allValues, calculateEquivalentRate} from './helpers';
-import {moneyString} from './helperComponents';
+import {MoneyString} from './helperComponents';
 import {getEquivalentRate} from './equivalentRate';
-
 
 const getSubState = state => state.form.mainForm.values;
 
 const createMoneyComponent = selector => connect(state => (
     {value: selector(state)}
-), () => null)(
-    ({value}): any => moneyString(value)
+))(
+    MoneyString
 );
 
 export const getMonthlyLoanPayment = (state) => {

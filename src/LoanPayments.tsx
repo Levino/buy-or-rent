@@ -2,9 +2,9 @@ import * as React from 'react'
 import { Table } from 'reactstrap'
 import { getAllValues } from './selectors'
 import { connect } from 'react-redux'
-import { moneyString } from './helperComponents'
+import { MoneyString } from './helperComponents'
 
-const LoanPaymentsComponent: any = ({allValues}) => (<Table size="sm" bordered>
+const LoanPaymentsComponent = ({allValues}) => (<Table size="sm" bordered>
     <thead>
     <tr>
       <th/>
@@ -35,20 +35,20 @@ const LoanPaymentsComponent: any = ({allValues}) => (<Table size="sm" bordered>
       <tr key={key}>
         <td>{year}</td>
         {/* Käufer */}
-        <td style={{textAlign: 'right'}}>{moneyString(loanAtBeginning)}</td>
-        <td style={{textAlign: 'right'}}>{moneyString(loanPayment)}</td>
-        <td style={{textAlign: 'right'}}>{moneyString(interest)}</td>
-        <td style={{textAlign: 'right'}}>{moneyString(loanAtEnd)}</td>
-        <td style={{textAlign: 'right'}}>{moneyString(valueOfProperty)}</td>
-        <td style={{textAlign: 'right', fontWeight: 'bold'}}>{moneyString(networth)}</td>
+        <td style={{textAlign: 'right'}}><MoneyString value={loanAtBeginning}/></td>
+        <td style={{textAlign: 'right'}}><MoneyString value={loanPayment}/></td>
+        <td style={{textAlign: 'right'}}><MoneyString value={interest}/></td>
+        <td style={{textAlign: 'right'}}><MoneyString value={loanAtEnd}/></td>
+        <td style={{textAlign: 'right'}}><MoneyString value={valueOfProperty}/></td>
+        <td style={{textAlign: 'right', fontWeight: 'bold'}}><MoneyString value={networth}/></td>
         {/* Mieter */}
-        <td style={{textAlign: 'right'}}>{moneyString(yearlyRent)}</td>
-        <td style={{textAlign: 'right'}}>{moneyString(monthlyRent)}</td>
-        <td style={{textAlign: 'right'}}>{moneyString(yearlyInvestment)}</td>
-        <td style={{textAlign: 'right'}}>{moneyString(stockGain)}</td>
+        <td style={{textAlign: 'right'}}><MoneyString value={yearlyRent}/></td>
+        <td style={{textAlign: 'right'}}><MoneyString value={monthlyRent}/></td>
+        <td style={{textAlign: 'right'}}><MoneyString value={yearlyInvestment}/></td>
+        <td style={{textAlign: 'right'}}><MoneyString value={stockGain}/></td>
         <td/>
-        <td style={{textAlign: 'right'}}>{moneyString(stockValue)}</td>
-        <td style={{textAlign: 'right', fontWeight: 'bold'}}>{moneyString(stockValue)}</td>
+        <td style={{textAlign: 'right'}}><MoneyString value={stockValue}/></td>
+        <td style={{textAlign: 'right', fontWeight: 'bold'}}><MoneyString value={stockValue}/></td>
       </tr>
     ))
     }

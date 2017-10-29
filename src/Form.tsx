@@ -2,17 +2,16 @@ import * as React from 'react'
 import {Field, reduxForm} from 'redux-form'
 import {Row, Col, Form, FormGroup, Label, InputGroup, InputGroupAddon} from 'reactstrap';
 
-const CustomFormGroup = ({ addon, name, label }) => (
+const CustomFormGroup = ({ addon, name, label }) =>
   <FormGroup>
     <Label htmlFor={label}>{label}</Label>
     <InputGroup>
       <Field name={name} className="form-control" component="input" type="number" parse={value => Number(value)}/>
       {addon && <InputGroupAddon>{addon}</InputGroupAddon>}
     </InputGroup>
-  </FormGroup>
-)
+  </FormGroup>;
 
-const MainForm = () => (
+const MainForm = ()  => (
   <Form>
     <Row>
       <Col md={6}>

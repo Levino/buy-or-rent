@@ -32,7 +32,7 @@ const PaymentsRepaymentPeriod = () => {
       result: true
     }
   ]
-  const Content = () => (<Table size="sm">
+  const Content = () : any => (<Table size="sm">
       <thead>
         <tr>
           <th scope="col">Verwendung</th>
@@ -51,7 +51,7 @@ const PaymentsRepaymentPeriod = () => {
   </Col></Row>
 }
 
-const PaymentsDyingPeriod = () =>  {
+const PaymentsDyingPeriod = ()  =>  {
   const entries = [
     {
       title: 'Investitionsrücklage',
@@ -66,7 +66,7 @@ const PaymentsDyingPeriod = () =>  {
       result: true
     }
   ]
-  const Content = () => <Table size="sm">
+  const Content = ()  => <Table size="sm">
     <thead>
     <tr>
       <th scope="col">Verwendung</th>
@@ -78,7 +78,7 @@ const PaymentsDyingPeriod = () =>  {
     {entries.map((entry, key) => <TableRow key={key} {...entry} />)}
     </tbody>
   </Table>
-  const Heading = () => <h3>Zahlungen Käufer Sterbephase</h3>
+  const Heading = ()  => <h3>Zahlungen Käufer Sterbephase</h3>
   return <Row><Col>
     <Heading key="heading"/>
     <Content key="content"/>

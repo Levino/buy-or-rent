@@ -1,6 +1,11 @@
-export const moneyString = number => {
-    if (!number) {
-        number = 0
+import * as React from 'react';
+import {Component} from 'react';
+
+class MoneyString extends Component<{value: number}>  {
+    render() {
+        const { value } = this.props
+        return <span>{`${(Math.round(value * 100) / 100).toLocaleString('de', { currency: 'EUR', minimumFractionDigits: 2 })} €`}</span>
     }
-    return `${(Math.round(number * 100) / 100).toLocaleString('de', { currency: 'EUR', minimumFractionDigits: 2 })} €`
 }
+
+export { MoneyString }
