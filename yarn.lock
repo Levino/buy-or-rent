@@ -10,6 +10,10 @@
   version "4.14.80"
   resolved "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.80.tgz#a6b8b7900e6a7dcbc2e90d9b6dfbe3f6a7f69951"
 
+"@types/memoizee@^0.4.2":
+  version "0.4.2"
+  resolved "https://registry.npmjs.org/@types/memoizee/-/memoizee-0.4.2.tgz#a500158999a8144a9b46cf9a9fb49b15f1853573"
+
 "@types/node@*", "@types/node@^8.0.47":
   version "8.0.47"
   resolved "https://registry.npmjs.org/@types/node/-/node-8.0.47.tgz#968e596f91acd59069054558a00708c445ca30c2"

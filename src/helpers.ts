@@ -1,5 +1,7 @@
 import {times} from 'lodash';
-
+import * as memoize from 'memoizee'
+import memProfile from 'memoizee/profile'
+(<any>window).memProfile = memProfile
 export const PMT = (rate, nper, pv, fv = 0, type = 0) => {
     if (rate === 0) return -(pv + fv) / nper;
 
@@ -212,10 +214,14 @@ export const sum = (from: number, to: number, fn: (i: number) => number) : numbe
     return times(to - from + 1, (value) => value + from).reduce((acc, value) => acc + fn(value), 0)
 }
 
-export const restOfLoan = (paymentPerPeriod: number,
+const amountAtEndOfPeriod = (amountAtBeginning: number, interestRate: number, paymentPerPeriod: number): number => amountAtBeginning * (1 + interestRate) - paymentPerPeriod
+
+export const restOfLoan = memoize((paymentPerPeriod: number,
                            loanAmount: number,
                            interestRate: number,
                            period: number): number => {
-    const reducer = (acc) => acc * (1 + interestRate) - paymentPerPeriod
-    return times(period).reduce(reducer, loanAmount)
-}
+    if (period === 1) {
+        return amountAtEndOfPeriod(loanAmount, interestRate, paymentPerPeriod)
+    }
+    return restOfLoan(paymentPerPeriod, amountAtEndOfPeriod(loanAmount, interestRate, paymentPerPeriod), interestRate, period -1)
+})

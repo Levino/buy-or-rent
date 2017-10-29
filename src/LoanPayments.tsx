@@ -4,10 +4,9 @@ import {getAllValues, getInterestRate, getLoan, getMonthlyLoanPayment} from './s
 import { connect } from 'react-redux'
 import { MoneyString } from './helperComponents'
 import {restOfLoan} from './helpers';
-import { curry } from 'lodash';
+
 const LoanPaymentsComponent = ({allValues, loanAmount, monthlyLoanPayment, interestRate}) => {
-    const curriedRestOfLoan = curry(restOfLoan)
-    const restOfLoanForPeriod = curriedRestOfLoan(monthlyLoanPayment, loanAmount, interestRate / 12)
+    const restOfLoanForPeriod = (period) => restOfLoan(monthlyLoanPayment, loanAmount, interestRate / 12, period)
     return <Table size="sm" bordered>
         <thead>
         <tr>
