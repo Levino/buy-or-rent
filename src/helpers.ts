@@ -1,5 +1,4 @@
 import {times} from 'lodash';
-import memoize from 'memoizee';
 
 export const PMT = (rate, nper, pv, fv = 0, type = 0) => {
     if (rate === 0) return -(pv + fv) / nper;
@@ -141,7 +140,6 @@ export const allValues = ({
         equivalentRate,
         stockValueAtBeginning: equity
     });
-    console.log(tenantValuesArray);
     const buyerValuesArray = buyerValues({
         interestRate,
         loan,
@@ -218,6 +216,6 @@ export const restOfLoan = (paymentPerPeriod: number,
                            loanAmount: number,
                            interestRate: number,
                            period: number): number => {
-    const reducer = memoize((acc, value) => value * (1 + interestRate) - paymentPerPeriod)
+    const reducer = (acc) => acc * (1 + interestRate) - paymentPerPeriod
     return times(period).reduce(reducer, loanAmount)
 }

@@ -74,11 +74,11 @@ const getEquity = state => getSubState(state).equity;
 
 export const Equity = createMoneyComponent(getEquity);
 
-const getLoan = state => grossPrice(state) - getEquity(state);
+export const getLoan = state => grossPrice(state) - getEquity(state);
 
 export const Loan = createMoneyComponent(getLoan);
 
-const getInterestRate = state => getSubState(state).interestRate / 100;
+export const getInterestRate = state => getSubState(state).interestRate / 100;
 
 const getTimeToDeath = state => getSubState(state).timeToDeath;
 
