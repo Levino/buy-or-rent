@@ -26,9 +26,9 @@ const MainForm = () => (
       <Col md={6}>
         <CustomFormGroup addon="% pro Jahr" label="Investitionsrücklage" name="investmentReserve"/>
         <CustomFormGroup addon="Jahre" label="Laufzeit" name="periods"/>
-        <CustomFormGroup addon="% vom Kaufpreis" label="Notarkosten" name="notaryFee"/>
-        <CustomFormGroup addon="% vom Kaufpreis" label="Grunderwerbsteuer" name="propertyPurchaseTax"/>
-        <CustomFormGroup addon="% vom Kaufpreis" label="Maklergebühr" name="brokerFee"/>
+        <CustomFormGroup addon="%" label="Notarkosten" name="notaryFee"/>
+        <CustomFormGroup addon="%" label="Grunderwerbsteuer" name="propertyPurchaseTax"/>
+        <CustomFormGroup addon="%" label="Maklergebühr" name="brokerFee"/>
         <CustomFormGroup addon="%" label="Äquivalenzrendite" name="equivalentYield"/>
       </Col>
     </Row>

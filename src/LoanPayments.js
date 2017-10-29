@@ -5,21 +5,24 @@ import { connect } from 'react-redux'
 import { moneyString } from './helpers'
 
 const LoanPaymentsComponent = ({loanPayments}) => (
-  <Table>
+  <Table size="sm">
     <thead>
      <tr>
-       <th>Year</th>
-       <th>Loan at beginning of period</th>
-       <th>Annual Payment</th>
+       <th>Jahr</th>
+       <th style={{textAlign: 'right'}}>Kredit Jahresbeginn</th>
+       <th style={{textAlign: 'right'}}>Tilgung</th>
+       <th style={{textAlign: 'right'}}>Zinsen</th>
+       <th style={{textAlign: 'right'}}>Kredit Jahresende</th>
      </tr>
     </thead>
-    <tbody style={{textAlign: 'right'}}>
-    {loanPayments.map(({year, loanAtBeginning, loanAtEnd, loanPayment }, key) => (
+      <tbody>
+    {loanPayments.map(({year, loanAtBeginning, loanAtEnd, loanPayment, interest }, key) => (
       <tr key={key}>
         <td>{year}</td>
-        <td>{moneyString(loanAtBeginning)}</td>
-        <td>{moneyString(loanPayment)}</td>
-        <td>{moneyString(loanAtEnd)}</td>
+        <td style={{textAlign: 'right'}}>{moneyString(loanAtBeginning)}</td>
+        <td style={{textAlign: 'right'}}>{moneyString(loanPayment)}</td>
+        <td style={{textAlign: 'right'}}>{moneyString(interest)}</td>
+        <td style={{textAlign: 'right'}}>{moneyString(loanAtEnd)}</td>
       </tr>
     ))
     }

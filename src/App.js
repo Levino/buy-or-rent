@@ -3,7 +3,7 @@ import {Container, Row, Col} from 'reactstrap'
 import LoanPayments from './LoanPayments'
 import './App.css';
 import Form from './Form'
-import Result from './Result'
+import Result from './Result/index'
 class App extends Component {
   render () {
     return (

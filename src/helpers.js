@@ -10,7 +10,7 @@ export const PMT = (rate, nper, pv, fv = 0, type = 0) => {
 
   return pmt
 }
-export const moneyString = number => `${number.toLocaleString('de', { currency: 'EUR' })} €`
+export const moneyString = number => `${(Math.round(number * 100)/100).toLocaleString('de', { currency: 'EUR' })} €`
 
 export const monthlyLoanPayment = ({interestRate, loan, years}) => -1 * PMT(interestRate / 12, years * 12, loan)
 
@@ -23,8 +23,10 @@ export const loanPayments = ({interestRate, loan, years}) => {
   return [...Array(years).keys()].map(year => {
     let loanAtBeginningOfMonth = loanAtBeginningOfYear
     let loanAtEndOfMonth
+    let yearlyInterest = 0
     const monthlyPayments = [...Array(12).keys()].map(() => {
       const interest = loanAtBeginningOfMonth * interestRate / 12
+      yearlyInterest += interest
       loanAtEndOfMonth = loanAtBeginningOfMonth - amountMonthlyLoanPayment + interest
       const result = {
         loanAtBeginning: loanAtBeginningOfMonth,
@@ -39,6 +41,7 @@ export const loanPayments = ({interestRate, loan, years}) => {
       loanAtBeginning: roundMoney(loanAtBeginningOfYear),
       loanPayment: roundMoney(amountMonthlyLoanPayment * 12),
       loanAtEnd: roundMoney(loanAtEndOfYear),
+      interest: yearlyInterest,
       monthlyPayments
     }
     loanAtBeginningOfYear = loanAtEndOfYear
