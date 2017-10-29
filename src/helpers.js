@@ -10,7 +10,7 @@ export const PMT = (rate, nper, pv, fv = 0, type = 0) => {
 
   return pmt
 }
-export const moneyString = number => `${(Math.round(number * 100)/100).toLocaleString('de', { currency: 'EUR' })} €`
+export const moneyString = number => `${(Math.round(number * 100)/100).toLocaleString('de', { currency: 'EUR' , minimumFractionDigits: 2 })} €`
 
 export const monthlyLoanPayment = ({interestRate, loan, years}) => -1 * PMT(interestRate / 12, years * 12, loan)
 
