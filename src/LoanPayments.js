@@ -1,6 +1,6 @@
 import React from 'react'
 import { Table } from 'reactstrap'
-import { loanPayments } from './selectors'
+import { getLoanPayments } from './selectors'
 import { connect } from 'react-redux'
 import { moneyString } from './helpers'
 
@@ -28,8 +28,7 @@ const LoanPaymentsComponent = ({loanPayments}) => (
 )
 
 const mapStateToProps = state => {
-  console.log(loanPayments(state))
-  return {loanPayments: loanPayments(state)}
+  return {loanPayments: getLoanPayments(state)}
 }
 
 export default connect(mapStateToProps)(LoanPaymentsComponent)

@@ -1,6 +1,6 @@
 import {connect} from 'react-redux'
 
-import {monthlyLoanPayment, moneyString } from './helpers'
+import {monthlyLoanPayment, moneyString, loanPayments} from './helpers'
 
 
 const getSubState = state => state.form.mainForm.values
@@ -71,21 +71,9 @@ const getLoan = state => grossPrice(state) - equity(state)
 
 const getInterestRate = state => getSubState(state).interestRate
 
-export const loanPayments = state => {
-  const yearlyLoanPayment = yearlyPaymentBuyer(state)
+export const getLoanPayments = state => {
   const periods = getPeriods(state)
-  let loanAtBeginning = getLoan(state)
-  return [...Array(periods).keys()].map((value, period) => {
-    const loanAtEnd = loanAtBeginning - yearlyLoanPayment
-    const interest = getInterestRate(state) / 100 * loanAtBeginning
-    const result = {
-      year: 2018 + period,
-      loanAtBeginning,
-      loanPayment: annualLoanPayment(state),
-      interest,
-      loanAtEnd
-    }
-    loanAtBeginning = loanAtEnd + interest
-    return result
-  })
+  const interestRate = getInterestRate(state)/100
+  const loan = getLoan(state)
+  return loanPayments({years: periods, interestRate, loan})
 }
