@@ -23,7 +23,7 @@ class App extends Component {
           </Col>
         </Row>
         <Row>
-          <Col md={6}>
+          <Col>
             <LoanPayments />
           </Col>
         </Row>

@@ -10,21 +10,26 @@ export const PMT = (rate, nper, pv, fv = 0, type = 0) => {
 
   return pmt
 }
-export const moneyString = number => `${(Math.round(number * 100)/100).toLocaleString('de', { currency: 'EUR' , minimumFractionDigits: 2 })} €`
+export const moneyString = number => {
+  if (!number) {
+    number = 0
+  }
+  return `${(Math.round(number * 100) / 100).toLocaleString('de', { currency: 'EUR', minimumFractionDigits: 2 })} €`
+}
 
-export const monthlyLoanPayment = ({interestRate, loan, years}) => -1 * PMT(interestRate / 12, years * 12, loan)
+export const monthlyLoanPayment = ({ interestRate, loan, years }) => -1 * PMT(interestRate / 12, years * 12, loan)
 
-const roundMoney = number => Math.round(number*100)/100
+const roundMoney = number => Math.round(number * 100) / 100
 
-export const loanPayments = ({interestRate, loan, years}) => {
+export const loanPayments = ({ interestRate, loan, years }) => {
   let loanAtBeginningOfYear = loan
   let loanAtEndOfYear
-  const amountMonthlyLoanPayment = monthlyLoanPayment({interestRate, loan, years})
-  return [...Array(years).keys()].map(year => {
+  const amountMonthlyLoanPayment = monthlyLoanPayment({ interestRate, loan, years })
+  return [ ...Array(years).keys() ].map(year => {
     let loanAtBeginningOfMonth = loanAtBeginningOfYear
     let loanAtEndOfMonth
     let yearlyInterest = 0
-    const monthlyPayments = [...Array(12).keys()].map(() => {
+    const monthlyPayments = [ ...Array(12).keys() ].map(() => {
       const interest = loanAtBeginningOfMonth * interestRate / 12
       yearlyInterest += interest
       loanAtEndOfMonth = loanAtBeginningOfMonth - amountMonthlyLoanPayment + interest
@@ -35,7 +40,7 @@ export const loanPayments = ({interestRate, loan, years}) => {
       loanAtBeginningOfMonth = loanAtEndOfMonth
       return result
     })
-    loanAtEndOfYear = monthlyPayments[11].loanAtEnd
+    loanAtEndOfYear = monthlyPayments[ 11 ].loanAtEnd
     const result = {
       year: 2018 + year,
       loanAtBeginning: roundMoney(loanAtBeginningOfYear),
@@ -47,4 +52,109 @@ export const loanPayments = ({interestRate, loan, years}) => {
     loanAtBeginningOfYear = loanAtEndOfYear
     return result
   })
+}
+
+const valueOfPropertyByYear = ({ valueAtBeginning, periods, gainPerPeriod }) => {
+  return [ ...Array(periods).keys() ].map((period) => (
+    {
+      year: 2018 + period,
+      value: valueAtBeginning * Math.pow((1 + gainPerPeriod), period)
+    }
+  ))
+}
+
+export const buyerValues = ({ interestRate, loan, repaymentPeriods, timeToDeath, transactionCost, timeBetweenTransactions, valueAtBeginning, equityPriceIncrease }) => {
+  const loanPaymentsArray = loanPayments({ interestRate, loan, years: repaymentPeriods })
+  const valueOfPropertyByYearArray = valueOfPropertyByYear({
+    valueAtBeginning,
+    periods: timeToDeath,
+    gainPerPeriod: equityPriceIncrease
+  })
+  return valueOfPropertyByYearArray.map(({ year, value }, index) => ({
+    year,
+    valueOfProperty: value,
+    ...loanPaymentsArray[ index ],
+    networth: value - (loanPaymentsArray[ index ] ? loanPaymentsArray[ index ].loanAtEnd : 0)
+  }))
+}
+
+const yearlyStockValues = ({ stockValueAtBeginning, monthlyRate, interestRate }) => [ ...Array(12).keys() ].reduce(({
+                                                                                                                      stockGain,
+                                                                                                                      stockValue
+                                                                                                                    }) => {
+  const stockGainThisMonth = stockValue * interestRate / 12
+  return {
+    stockGain: stockGain + stockGainThisMonth,
+    stockValue: stockValue + stockGainThisMonth + monthlyRate
+  }
+}, { stockGain: 0, stockValue: stockValueAtBeginning })
+
+const tenantValues = ({ yearlyRentIncrease, rentAtBeginning, periods, stockValueAtBeginning, monthlyPayment, equivalentRate, paymentPeriods }) => {
+  let stockValue = stockValueAtBeginning
+  return [ ...Array(periods).keys() ].map(period => {
+    const yearlyRent = rentAtBeginning * Math.pow((1 + yearlyRentIncrease), period)
+    const monthlyRent = yearlyRent / 12
+    let monthlyInvestment
+    if (period < paymentPeriods) {
+      monthlyInvestment = monthlyPayment - monthlyRent
+    } else {
+      monthlyInvestment = - monthlyRent
+    }
+    const yearlyStockValuesObject = yearlyStockValues({
+      stockValueAtBeginning: stockValue,
+      monthlyRate: monthlyInvestment,
+      interestRate: equivalentRate
+    })
+    const result = {
+      year: 2018 + period,
+      yearlyRent,
+      monthlyRent,
+      ...yearlyStockValuesObject,
+      yearlyInvestment: monthlyInvestment * 12
+    }
+    stockValue = yearlyStockValuesObject.stockValue
+    return result
+  })
+}
+
+export const allValues = ({
+                            interestRate,
+                            loan,
+                            repaymentPeriods,
+                            timeToDeath,
+                            transactionCost,
+                            timeBetweenTransactions,
+                            valueAtBeginning,
+                            equityPriceIncrease,
+                            rentAtBeginning,
+                            yearlyRentIncrease,
+                            equivalentRate,
+                            equity,
+  monthlyPayment
+                          }) => {
+
+  const tenantValuesArray = tenantValues({
+    yearlyRentIncrease,
+    rentAtBeginning,
+    periods: timeToDeath,
+    monthlyPayment,
+    paymentPeriods: repaymentPeriods,
+    equivalentRate,
+    stockValueAtBeginning: equity
+  })
+  console.log(tenantValuesArray)
+  const buyerValuesArray = buyerValues({
+    interestRate,
+    loan,
+    repaymentPeriods,
+    timeToDeath,
+    transactionCost,
+    timeBetweenTransactions,
+    valueAtBeginning,
+    equityPriceIncrease
+  })
+  return buyerValuesArray.map((value, index) => ({
+    ...value,
+    ...tenantValuesArray[ index ]
+  }))
 }

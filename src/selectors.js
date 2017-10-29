@@ -1,6 +1,6 @@
 import {connect} from 'react-redux'
 
-import {monthlyLoanPayment, moneyString, loanPayments} from './helpers'
+import {monthlyLoanPayment, moneyString, allValues} from './helpers'
 
 
 const getSubState = state => state.form.mainForm.values
@@ -79,11 +79,28 @@ export const Loan = createMoneyComponent(getLoan)
 
 const getInterestRate = state => getSubState(state).interestRate / 100
 
-export const getLoanPayments = state => {
+const getTimeToDeath = state => getSubState(state).timeToDeath
+
+const getEquityPriceIncrease = state => getSubState(state).equityPriceIncrease / 100
+
+const getRentIncreasePerYear = state => getSubState(state).rentIncreasePerYear / 100
+
+const getEquivalentRate = state => getSubState(state).equivalentYield / 100
+
+export const getAllValues = state => {
   const periods = getPeriods(state)
   const interestRate = getInterestRate(state)
   const loan = getLoan(state)
-  return loanPayments({years: periods, interestRate, loan})
+  const timeToDeath = getTimeToDeath(state)
+  const valueAtBeginning = getNetPrice(state)
+  const equityPriceIncrease = getEquityPriceIncrease(state)
+  const rentAtBeginning = getRentPerYear(state)
+  const yearlyRentIncrease = getRentIncreasePerYear(state)
+  const equivalentRate = getEquivalentRate(state)
+  const equity = getEquity(state)
+  const monthlyPayment = getMonthlyPaymentBuyer(state)
+  return allValues({repaymentPeriods: periods, interestRate, loan, timeToDeath, valueAtBeginning,
+    yearlyRentIncrease, rentAtBeginning, equityPriceIncrease, equivalentRate, equity, monthlyPayment})
 }
 
 const getBrokerFee = state => getSubState(state).brokerFee / 100
