@@ -29,7 +29,7 @@ export const getAnnualInvestmentPayment = state => {
     const {
         investmentReserve
     } = getSubState(state)
-    return investmentReserve * getNetPrice(state)
+    return 12 * investmentReserve * getNetPrice(state)
 }
 
 export const AnnualInvestmentPayment = createMoneyComponent(getAnnualInvestmentPayment)
