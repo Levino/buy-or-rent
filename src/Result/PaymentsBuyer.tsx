@@ -32,7 +32,7 @@ const PaymentsRepaymentPeriod = () => {
       result: true
     }
   ]
-  const Content = () : any => (<Table size="sm">
+  const Content = () => (<Table size="sm">
       <thead>
         <tr>
           <th scope="col">Verwendung</th>
@@ -43,12 +43,12 @@ const PaymentsRepaymentPeriod = () => {
       <tbody>
         {entries.map((entry, key) => <TableRow key={key} {...entry} />)}
       </tbody>
-    </Table>);
+    </Table>)
   const Heading = () => <h3>Zahlungen Käufer Tilgungsphase</h3>
-  return <Row><Col>
+  return (<Row><Col>
     <Heading key="heading"/>
     <Content key="content"/>
-  </Col></Row>
+   </Col></Row>)
 }
 
 const PaymentsDyingPeriod = ()  =>  {

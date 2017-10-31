@@ -1,7 +1,7 @@
-import * as React from 'react';
-import {Container, Row, Col} from 'reactstrap'
+import * as React from 'react'
+import { Container, Row, Col } from 'reactstrap'
 import LoanPayments from './LoanPayments'
-import './App.css';
+import './App.css'
 import Form from './Form'
 import Result from './Result/index'
 const App = () =>
@@ -27,4 +27,4 @@ const App = () =>
         </Row>
       </Container>
 
-export default App;
+export default App
