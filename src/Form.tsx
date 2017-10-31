@@ -51,17 +51,29 @@ const MainForm = () => (
         <CustomFormGroup addon="m²" label="Größe" name="size"/>
       </Col>
       <Col md={6}>
-        <CustomFormGroup addon="% pro Jahr" {...interestRateParsing} label="Investitionsrücklage"
-                         name="investmentReserve"/>
+        <CustomFormGroup
+          addon="% pro Jahr"
+          {...interestRateParsing}
+          label="Investitionsrücklage"
+          name="investmentReserve"
+        />
         <CustomFormGroup addon="Jahre" step="5" label="Laufzeit" name="periods" {...yearParsing}/>
         <CustomFormGroup addon="Jahre" step="5" label="Restliche Lebenszeit"  {...yearParsing} name="timeToDeath"/>
         <CustomFormGroup addon="%" {...percentParsing} step="0.1" label="Notarkosten" name="notaryFee"/>
         <CustomFormGroup addon="%" step="0.5" {...percentParsing} label="Grunderwerbsteuer" name="propertyPurchaseTax"/>
         <CustomFormGroup addon="%" step="1.19" {...percentParsing} label="Maklergebühr" name="brokerFee"/>
-        <CustomFormGroup addon="% pro Jahr" {...interestRateParsing} label="Wertzuwachs Immobilie"
-                         name="equityPriceIncrease"/>
-        <CustomFormGroup addon="% pro Jahr" {...percentParsing} label="Mietsteigerung pro Jahr"
-                         name="rentIncreasePerYear"/>
+        <CustomFormGroup
+          addon="% pro Jahr"
+          {...interestRateParsing}
+          label="Wertzuwachs Immobilie"
+          name="equityPriceIncrease"
+        />
+        <CustomFormGroup
+          addon="% pro Jahr"
+          {...percentParsing}
+          label="Mietsteigerung pro Jahr"
+          name="rentIncreasePerYear"
+        />
       </Col>
     </Row>
   </Form>
