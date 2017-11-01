@@ -14,14 +14,26 @@ interface ICustomFormGroup {
 }
 
 const CustomFormGroup = ({addon, name, label, step = '0.1', parse, format}: ICustomFormGroup) => {
-  return <FormGroup>
-    <Label htmlFor={label}>{label}</Label>
-    <InputGroup>
-      <Field name={name} className="form-control" component="input" type="number" step={step} format={format}
-             parse={parse}/>
-      {addon && <InputGroupAddon>{addon}</InputGroupAddon>}
-    </InputGroup>
-  </FormGroup>
+  return (
+    <FormGroup>
+      <Label className="control-label" htmlFor={label}>{label}</Label>
+      <div className="controls">
+        <InputGroup>
+          <Field
+            name={name}
+            className="form-control"
+            component="input"
+            type="number"
+            step={step}
+            format={format}
+            parse={parse}
+            id={label}
+          />
+          {addon && <InputGroupAddon>{addon}</InputGroupAddon>}
+        </InputGroup>
+      </div>
+    </FormGroup>
+  )
 }
 
 const percentParsing = {
@@ -49,14 +61,14 @@ const MainForm = () => (
         <CustomFormGroup addon="€ pro m²" label="Kaltmiete" step="0.5" name="rentPricePerSM"/>
         <CustomFormGroup addon="€ pro m²" label="Kaufpreis" step="100" name="buyPricePerSM"/>
         <CustomFormGroup addon="m²" label="Größe" name="size"/>
-      </Col>
-      <Col md={6}>
         <CustomFormGroup
           addon="% pro Jahr"
           {...interestRateParsing}
           label="Investitionsrücklage"
           name="investmentReserve"
         />
+      </Col>
+    <Col md={6}>
         <CustomFormGroup addon="Jahre" step="5" label="Laufzeit" name="periods" {...yearParsing}/>
         <CustomFormGroup addon="Jahre" step="5" label="Restliche Lebenszeit"  {...yearParsing} name="timeToDeath"/>
         <CustomFormGroup addon="%" {...percentParsing} step="0.1" label="Notarkosten" name="notaryFee"/>

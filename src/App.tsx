@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { Container, Row, Col } from 'reactstrap'
-import LoanPayments from './LoanPayments'
+import DetailsTable from './DetailsTable'
 import './App.css'
 import Form from './Form'
 import Result from './Result/index'
 const App = () =>
-      <Container fluid>
+      <Container fluid={true}>
         <Row>
           <Col>
             <h3>Kaufen oder mieten?</h3>
@@ -22,7 +22,7 @@ const App = () =>
         </Row>
         <Row>
           <Col>
-            <LoanPayments />
+            <DetailsTable />
           </Col>
         </Row>
       </Container>
