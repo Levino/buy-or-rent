@@ -2,12 +2,12 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { Component } from 'react'
 import {
-  equivalentYield,
   rentBetweenPeriods, savingsBetweenPeriods, stockGainBetweenPeriods, stockValueInPeriod,
   taxBetweenPeriods
 } from '../helpers'
-import { getLoanData, getPropertyAssetData, getRentData, getStockData, getTaxData } from '../selectors'
+import { getLoanData, getRentData, getStockData, getTaxData } from '../selectors'
 import { MoneyString } from '../helperComponents'
+import { getEquivalentRate } from '../equivalentRate'
 
 interface TenantRowInterface {
   rent: number,
@@ -46,8 +46,7 @@ const mapStateToProps = (state, {period, periodGap}: TenantRowOwnProps) => {
   const loanData = getLoanData(state)
   const taxData = getTaxData(state)
   const stockData = getStockData(state)
-  const assetData = getPropertyAssetData(state)
-  const eqYield = equivalentYield(stockData, rentData, loanData, taxData, assetData, 20 * 12)
+  const eqYield = getEquivalentRate(state)
   const rent = rentBetweenPeriods(rentData, period, period + periodGap)
   const savings = savingsBetweenPeriods(rentData, loanData, period, period + periodGap)
   const stockValue = stockValueInPeriod(stockData, rentData, loanData, taxData, eqYield, period + periodGap)

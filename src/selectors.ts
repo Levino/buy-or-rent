@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import {
-  loanPaymentPerPeriod, allValues, calculateEquivalentRate, loanDataType, AssetData, RentData,
+  loanPaymentPerPeriod, allValues, loanDataType, AssetData, RentData,
   StockData, TaxData
 } from './helpers'
 import { MoneyString } from './helperComponents'
@@ -163,35 +163,6 @@ export const RentPerYear = createMoneyComponent(getRentPerYear)
 const getRentPerMonth = state => getRentPerYear(state) / 12
 
 export const RentPerMonth = createMoneyComponent(getRentPerMonth)
-
-export const getCalculatedEquivalentRate = state => {
-  const periods = getPeriods(state)
-  const interestRate = getInterestRate(state)
-  const loan = getLoan(state)
-  const timeToDeath = getTimeToDeath(state)
-  const valueAtBeginning = getNetPrice(state)
-  const equityPriceIncrease = getEquityPriceIncrease(state)
-  const rentAtBeginning = getRentPerYear(state)
-  const yearlyRentIncrease = getRentIncreasePerYear(state)
-  const equity = getEquity(state)
-  const monthlyPaymentRepayment = getMonthlyPaymentBuyer(state)
-  const monthlyPaymentAfterRepayment = getMonthlyInvestmentPayment(state)
-  return calculateEquivalentRate({
-    repaymentPeriods: periods,
-    interestRate,
-    loan,
-    timeToDeath,
-    valueAtBeginning,
-    yearlyRentIncrease,
-    rentAtBeginning,
-    equityPriceIncrease,
-    equity,
-    monthlyPaymentRepayment,
-    monthlyPaymentAfterRepayment,
-    transactionCost: 0,
-    timeBetweenTransactions: 0
-  })
-}
 
 export const getLoanData = (state): loanDataType => {
   const loanAmount = getLoan(state)

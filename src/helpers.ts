@@ -184,57 +184,6 @@ export const allValues = ({
   }))
 }
 
-export const calculateEquivalentRate = ({
-                                          interestRate,
-                                          loan,
-                                          repaymentPeriods,
-                                          timeToDeath,
-                                          transactionCost,
-                                          timeBetweenTransactions,
-                                          valueAtBeginning,
-                                          equityPriceIncrease,
-                                          rentAtBeginning,
-                                          yearlyRentIncrease,
-                                          equity,
-                                          monthlyPaymentRepayment,
-                                          monthlyPaymentAfterRepayment
-                                        }) => {
-  let upperBoundary = 1
-  let lowerBoundary = 0
-  const allValuesForRate = (equivalentRateTwo) => allValues({
-    interestRate,
-    loan,
-    repaymentPeriods,
-    timeToDeath,
-    transactionCost,
-    timeBetweenTransactions,
-    valueAtBeginning,
-    equityPriceIncrease,
-    rentAtBeginning,
-    yearlyRentIncrease,
-    equity,
-    monthlyPaymentRepayment,
-    monthlyPaymentAfterRepayment,
-    equivalentRate: equivalentRateTwo
-  })
-  const error = (allValuesArray) => {
-    const {networth, stockValue} = allValuesArray[timeToDeath]
-    return Math.abs(networth - stockValue)
-  }
-  let equivalentRate = 0.5
-  let lastAllValuesArray = allValuesForRate(equivalentRate)
-  while (Math.abs(error(lastAllValuesArray)) >= 100) {
-    if (error(lastAllValuesArray) < 0) {
-      upperBoundary = (lowerBoundary + upperBoundary) / 2
-    } else {
-      lowerBoundary = (upperBoundary + lowerBoundary) / 2
-    }
-    equivalentRate = (lowerBoundary + upperBoundary) / 2
-    lastAllValuesArray = allValuesForRate(equivalentRate)
-  }
-  return equivalentRate
-}
-
 export const sum = (from: number, to: number, fn: (i: number) => number): number => {
   return times(to - from + 1, (value) => value + from).reduce((acc, value) => acc + fn(value), 0)
 }
@@ -413,32 +362,48 @@ export const taxBetweenPeriods = memoize((
     + taxPerPeriod(stockData, rentData, loanData, taxData, stockIncreasePerPeriod, toPeriod - 1)
 })
 
-export const equivalentYield = memoize((
-  stockData: StockData,
+type CalcEquivalentRateType = {
+  stockData: StockData
   rentData: RentData,
   loanData: loanDataType,
   taxData: TaxData,
   assetData: AssetData,
-  period: number) => {
+  period: number
+}
+export const calculateEquivalentYield = async ({
+  stockData,
+  rentData,
+  loanData,
+  taxData,
+  assetData,
+  period}: CalcEquivalentRateType) => {
   let upperLimit = 0.2
   let lowerLimit = 0
-  let error
+  let error = 1
   let approximationValue
   let safety = 0
-  do {
-    approximationValue = (upperLimit + lowerLimit) / 2
-    const netWorthBuyer = netWorth(loanData, assetData, period)
-    const netWorthTenant = stockValueInPeriod(stockData, rentData, loanData, taxData, approximationValue, period)
-    error = netWorthTenant - netWorthBuyer
-    if (error > 0 ) {
-      upperLimit = approximationValue
-    } else {
-      lowerLimit = approximationValue
-    }
-    ++safety
-  } while (safety < 10000 && Math.abs(error) > 0.001)
-  if (safety === 10000) {
-    throw new Error('Approximation failed!')
+
+  const iteration = async () => {
+    return new Promise((resolve, reject) => {
+      approximationValue = (upperLimit + lowerLimit) / 2
+      const netWorthBuyer = netWorth(loanData, assetData, period)
+      const netWorthTenant = stockValueInPeriod(stockData, rentData, loanData, taxData, approximationValue, period)
+      error = netWorthTenant - netWorthBuyer
+      if (error > 0) {
+        upperLimit = approximationValue
+      } else {
+        lowerLimit = approximationValue
+      }
+      ++safety
+      if (safety > 10000) {
+        return reject('Approximation failed!')
+      }
+      resolve()
+    })
   }
+
+  do {
+    await iteration()
+  } while (Math.abs(error) > 0.001)
   return approximationValue
-})
+}
