@@ -62,7 +62,7 @@ const DetailsTable = ({periods, format = 'years'}: DetailsTableProps) => {
     periodsArray = periodsArray.filter(period => (period % 12 === 0))
     periodGap = 12
   } else {
-    periodsArray = times(Math.min(periods, 10))
+    periodsArray = times(10)
   }
   return <Table size="sm" bordered={true} responsive={true}>
     <thead>

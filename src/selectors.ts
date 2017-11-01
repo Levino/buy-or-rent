@@ -2,9 +2,10 @@ import { connect } from 'react-redux'
 
 import {
   loanPaymentPerPeriod, loanDataType, AssetData, RentData,
-  StockData, TaxData
+  StockData, TaxData, theData
 } from './helpers'
 import { MoneyString } from './helperComponents'
+import { getEquivalentRate } from './equivalentRate'
 
 const getSubState = state => state.form.mainForm.values
 
@@ -17,8 +18,8 @@ const createMoneyComponent = selector => connect(state => (
 const getLoanPaymentInFirstPeriod = state => getMonthlyLoanPayment(state, 0)
 
 export const getMonthlyLoanPayment = (state, period: number) => {
-  const loanData = getLoanData(state)
-  return loanPaymentPerPeriod(loanData, period)
+  const data = getTheData(state)
+  return loanPaymentPerPeriod(data, period)
 }
 
 export const MonthlyLoanPayment = createMoneyComponent(getLoanPaymentInFirstPeriod)
@@ -152,7 +153,8 @@ export const getStockData = (state: any): StockData => {
     equity
   } = subState
   return {
-    equity
+    equity,
+    stockIncreasePerPeriod: getEquivalentRate(state)
   }
 }
 
@@ -165,3 +167,11 @@ export const getTaxData = (state: any): TaxData => {
     capGainsTax
   }
 }
+
+export const getTheData = (state): theData => ({
+  taxData: getTaxData(state),
+  stockData: getStockData(state),
+  rentData: getRentData(state),
+  assetData: getPropertyAssetData(state),
+  loanData: getLoanData(state)
+})

@@ -5,9 +5,8 @@ import {
   rentBetweenPeriods, savingsBetweenPeriods, stockGainBetweenPeriods, stockValueInPeriod,
   taxBetweenPeriods
 } from '../helpers'
-import { getLoanData, getRentData, getStockData, getTaxData } from '../selectors'
+import { getTheData } from '../selectors'
 import { MoneyString } from '../helperComponents'
-import { getEquivalentRate } from '../equivalentRate'
 
 interface TenantRowInterface {
   rent: number,
@@ -42,16 +41,12 @@ type TenantRowOwnProps = {
 }
 
 const mapStateToProps = (state, {period, periodGap}: TenantRowOwnProps) => {
-  const rentData = getRentData(state)
-  const loanData = getLoanData(state)
-  const taxData = getTaxData(state)
-  const stockData = getStockData(state)
-  const eqYield = getEquivalentRate(state)
-  const rent = rentBetweenPeriods(rentData, period, period + periodGap)
-  const savings = savingsBetweenPeriods(rentData, loanData, period, period + periodGap)
-  const stockValue = stockValueInPeriod(stockData, rentData, loanData, taxData, eqYield, period + periodGap)
-  const stockGain = stockGainBetweenPeriods(stockData, rentData, loanData, taxData, eqYield, period, period + periodGap)
-  const tax = taxBetweenPeriods(stockData, rentData, loanData, taxData, eqYield, period, period + periodGap)
+  const data = getTheData(state)
+  const rent = rentBetweenPeriods(data, period, period + periodGap)
+  const savings = savingsBetweenPeriods(data, period, period + periodGap)
+  const stockValue = stockValueInPeriod(data, period + periodGap)
+  const stockGain = stockGainBetweenPeriods(data, period, period + periodGap)
+  const tax = taxBetweenPeriods(data, period, period + periodGap)
   return {
     rent,
     savings,
