@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import {
-  loanPaymentPerPeriod, allValues, calculateEquivalentRate, loanDataType, IassetData, RentData,
+  loanPaymentPerPeriod, allValues, calculateEquivalentRate, loanDataType, AssetData, RentData,
   StockData, TaxData
 } from './helpers'
 import { MoneyString } from './helperComponents'
@@ -203,7 +203,7 @@ export const getLoanData = (state): loanDataType => {
   }
 }
 
-export const getPropertyAssetData = (state): IassetData => {
+export const getPropertyAssetData = (state): AssetData => {
   const equity = getNetPrice(state)
   const yieldPerPeriod = getEquityPriceIncrease(state)
   return {

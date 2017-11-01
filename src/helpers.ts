@@ -261,12 +261,12 @@ export const restOfLoan = memoize((loanData: loanDataType,
   return amountAtEndOfPeriod(restOfLoan(loanData, period - 1), interestRate, paymentPerPeriod)
 })
 
-export interface IassetData {
+export type AssetData = {
   equity: number
   yieldPerPeriod: number
 }
 
-export const assetValuation = memoize((assetData: IassetData, period: number): number => {
+export const assetValuation = memoize((assetData: AssetData, period: number): number => {
   const {
     equity,
     yieldPerPeriod
@@ -288,7 +288,7 @@ export const interestBetween = memoize((loanData: loanDataType, fromPeriod: numb
     + restOfLoan(loanData, toPeriod - 1) * loanData.interestRate
 })
 
-export const netWorth = (loanData: loanDataType, assetData: IassetData, period: number): number => {
+export const netWorth = (loanData: loanDataType, assetData: AssetData, period: number): number => {
   return assetValuation(assetData, period) - restOfLoan(loanData, period)
 }
 
@@ -411,4 +411,34 @@ export const taxBetweenPeriods = memoize((
   }
   return taxBetweenPeriods(stockData, rentData, loanData, taxData, stockIncreasePerPeriod, fromPeriod, toPeriod - 1)
     + taxPerPeriod(stockData, rentData, loanData, taxData, stockIncreasePerPeriod, toPeriod - 1)
+})
+
+export const equivalentYield = memoize((
+  stockData: StockData,
+  rentData: RentData,
+  loanData: loanDataType,
+  taxData: TaxData,
+  assetData: AssetData,
+  period: number) => {
+  let upperLimit = 0.2
+  let lowerLimit = 0
+  let error
+  let approximationValue
+  let safety = 0
+  do {
+    approximationValue = (upperLimit + lowerLimit) / 2
+    const netWorthBuyer = netWorth(loanData, assetData, period)
+    const netWorthTenant = stockValueInPeriod(stockData, rentData, loanData, taxData, approximationValue, period)
+    error = netWorthTenant - netWorthBuyer
+    if (error > 0 ) {
+      upperLimit = approximationValue
+    } else {
+      lowerLimit = approximationValue
+    }
+    ++safety
+  } while (safety < 10000 && Math.abs(error) > 0.001)
+  if (safety === 10000) {
+    throw new Error('Approximation failed!')
+  }
+  return approximationValue
 })
