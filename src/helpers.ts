@@ -74,7 +74,8 @@ export const buyerValues = ({
                               transactionCost,
                               timeBetweenTransactions,
                               valueAtBeginning,
-                              equityPriceIncrease}) => {
+                              equityPriceIncrease
+                            }) => {
   const loanPaymentsArray = loanPayments({interestRate, loan, periods: repaymentPeriods})
   const valueOfPropertyByYearArray = valueOfPropertyByYear({
     valueAtBeginning,
@@ -111,7 +112,8 @@ const tenantValues = ({
                         monthlyPaymentPhase1,
                         monthlyPaymentPhase2,
                         equivalentRate,
-                        phase1Periods}) => {
+                        phase1Periods
+                      }) => {
   let stockValue = stockValueAtBeginning
   return times(periods).map(period => {
     const yearlyRent = rentAtBeginning * Math.pow((1 + yearlyRentIncrease), period)
@@ -300,7 +302,7 @@ const rentInPeriod = memoize((rentData: RentData, period) => {
   if (period === 0) {
     return rentData.rentPricePerSM * rentData.size
   }
-  return rentInPeriod(rentData, period - 1)  * (1 + rentData.rentIncreasePerPeriod)
+  return rentInPeriod(rentData, period - 1) * (1 + rentData.rentIncreasePerPeriod)
 })
 
 export const rentBetweenPeriods = memoize((rentData: RentData, fromPeriod: number, toPeriod: number) => {
@@ -315,12 +317,10 @@ const savingsPerPeriod = memoize((rentData: RentData, loanData: loanDataType, pe
 })
 
 export const savingsBetweenPeriods = memoize(
-  (
-    rentData: RentData,
-    loanData: loanDataType,
-    fromPeriod: number,
-    toPeriod: number
-  ): number => {
+  (rentData: RentData,
+   loanData: loanDataType,
+   fromPeriod: number,
+   toPeriod: number): number => {
     if ((toPeriod - fromPeriod) === 1) {
       return savingsPerPeriod(rentData, loanData, fromPeriod)
     }
@@ -332,3 +332,83 @@ export const savingsBetweenPeriods = memoize(
       savingsPerPeriod(rentData, loanData, toPeriod)
   }
 )
+
+export type StockData = {
+  equity: number
+}
+
+export type TaxData = {
+  capGainsTax: number
+}
+
+export const stockValueInPeriod = memoize(
+  (stockData: StockData,
+   rentData: RentData,
+   loanData: loanDataType,
+   taxData: TaxData,
+   stockIncreasePerPeriod: number,
+   period: number): number => {
+    if (period < 0) {
+      throw new Error('period cannot be negative!')
+    }
+    if (period === 0) {
+      return stockData.equity
+    }
+    return stockValueInPeriod(stockData, rentData, loanData, taxData, stockIncreasePerPeriod, period - 1)
+      * (1 + (stockIncreasePerPeriod * (1 - taxData.capGainsTax)))
+      + savingsPerPeriod(rentData, loanData, period)
+  })
+
+const stockGainInPeriod = memoize((stockData: StockData,
+                                   rentData: RentData,
+                                   loanData: loanDataType,
+                                   taxData: TaxData,
+                                   stockIncreasePerPeriod: number,
+                                   period: number) => {
+  if (period === 0) {
+    return stockData.equity * stockIncreasePerPeriod
+  }
+  return stockValueInPeriod(stockData, rentData, loanData, taxData, stockIncreasePerPeriod, period - 1)
+    * stockIncreasePerPeriod
+})
+
+export const stockGainBetweenPeriods = memoize((stockData: StockData,
+                                                rentData: RentData,
+                                                loanData: loanDataType,
+                                                taxData: TaxData,
+                                                stockIncreasePerPeriod: number,
+                                                fromPeriod: number,
+                                                toPeriod: number) => {
+  if ((toPeriod - fromPeriod) === 1) {
+    return stockGainInPeriod(stockData, rentData, loanData, taxData, stockIncreasePerPeriod, toPeriod)
+  }
+  return stockGainBetweenPeriods(stockData, rentData, loanData, taxData, stockIncreasePerPeriod, fromPeriod, toPeriod - 1)
+    + stockGainInPeriod(stockData, rentData, loanData, taxData, stockIncreasePerPeriod, toPeriod)
+})
+
+const taxPerPeriod = memoize(((stockData: StockData,
+                               rentData: RentData,
+                               loanData: loanDataType,
+                               taxData: TaxData,
+                               stockIncreasePerPeriod: number,
+                               period: number) => {
+  return stockGainInPeriod(stockData, rentData, loanData, taxData, stockIncreasePerPeriod, period) * taxData.capGainsTax
+}))
+
+export const taxBetweenPeriods = memoize((
+  stockData: StockData,
+  rentData: RentData,
+  loanData: loanDataType,
+  taxData: TaxData,
+  stockIncreasePerPeriod: number,
+  fromPeriod: number,
+  toPeriod: number) => {
+  if (!(toPeriod > fromPeriod)) {
+    throw new Error('toPeriod needs to be larger than fromPeriod')
+  }
+  if ((toPeriod - fromPeriod) === 1) {
+    return taxPerPeriod(stockData, rentData, loanData, taxData, stockIncreasePerPeriod, fromPeriod)
+  }
+  return taxBetweenPeriods(stockData, rentData, loanData, taxData, stockIncreasePerPeriod, fromPeriod, toPeriod - 1)
+    + taxPerPeriod(stockData, rentData, loanData, taxData, stockIncreasePerPeriod, toPeriod - 1)
+})

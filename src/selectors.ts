@@ -1,6 +1,9 @@
 import { connect } from 'react-redux'
 
-import { loanPaymentPerPeriod, allValues, calculateEquivalentRate, loanDataType, IassetData, RentData } from './helpers'
+import {
+  loanPaymentPerPeriod, allValues, calculateEquivalentRate, loanDataType, IassetData, RentData,
+  StockData, TaxData
+} from './helpers'
 import { MoneyString } from './helperComponents'
 import { getEquivalentRate } from './equivalentRate'
 
@@ -220,5 +223,24 @@ export const getRentData = (state: any): RentData => {
     rentIncreasePerPeriod,
     rentPricePerSM,
     size
+  }
+}
+export const getStockData = (state: any): StockData => {
+  const subState = getSubState(state)
+  const {
+    equity
+  } = subState
+  return {
+    equity
+  }
+}
+
+export const getTaxData = (state: any): TaxData => {
+  const subState = getSubState(state)
+  const {
+    capGainsTax
+  } = subState
+  return {
+    capGainsTax
   }
 }
