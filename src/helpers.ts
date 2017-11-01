@@ -398,7 +398,7 @@ export const calculateEquivalentYield = async ({
       if (safety > 10000) {
         return reject('Approximation failed!')
       }
-      resolve()
+      setTimeout(resolve, 0)
     })
   }
 
