@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Container, Row, Col } from 'reactstrap'
-import DetailsTable from './DetailsTable'
+import DetailsTable from './DetailsTables'
 import './App.css'
 import Form from './Form'
 import Result from './Result/index'

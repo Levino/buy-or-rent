@@ -2,7 +2,7 @@ import * as React from 'react'
 import { getLoanData, getPropertyAssetData } from '../selectors'
 import { connect } from 'react-redux'
 import { MoneyString } from '../helperComponents'
-import { assetValuation, interestBetween, netWorth, PMT, restOfLoan } from '../helpers'
+import { assetValuation, interestBetween, loanPaymentPerPeriod, netWorth, restOfLoan } from '../helpers'
 import { Component } from 'react'
 
 interface BuyerRowInterface {
@@ -54,14 +54,14 @@ const mapStateToProps = (state: any, ownProps: any) => {
   } = ownProps
   const loanData = getLoanData(state)
   const equityData = getPropertyAssetData(state)
-  const loanPaymentPerPeriod = PMT(loanData.interestRate, loanData.periods, loanData.loanAmount)
+  const loanPaymentPerPeriodValue = loanPaymentPerPeriod(loanData, period)
 
   return {
     loanAmount: restOfLoan(loanData, period),
     loanAmountAtEnd: restOfLoan(loanData, period + periodGap),
     assetValuationAtEnd: assetValuation(equityData, period + periodGap),
     interestBetweenPeriods: interestBetween(loanData, period, period + periodGap),
-    loanPayment: loanPaymentPerPeriod * (periodGap),
+    loanPayment: loanPaymentPerPeriodValue * (periodGap),
     netWorthAtEnd: netWorth(loanData, equityData, period + periodGap),
     period,
     periodGap

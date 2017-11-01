@@ -1,5 +1,5 @@
 import { call, put, takeLatest, select } from 'redux-saga/effects'
-import { getLoanData, getPeriods, getPropertyAssetData, getRentData, getStockData, getTaxData } from './selectors'
+import { getLoanData, getPropertyAssetData, getRentData, getStockData, getTaxData } from './selectors'
 import { calculateEquivalentYield } from './helpers'
 
 const EQUIVALENT_RATE_CALCULATION_SUCCEEDED = 'EQUIVALENT_RATE_CALCULATION_SUCCEEDED'
@@ -19,7 +19,6 @@ function* calculateEquivalentRateGenerator() {
     assetData: getPropertyAssetData(state),
     taxData: getTaxData(state),
     loanData: getLoanData(state),
-    period: getPeriods(state),
     stockData: getStockData(state),
     rentData: getRentData(state)
   }

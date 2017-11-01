@@ -1,4 +1,3 @@
-import { times } from 'lodash'
 import * as memoize from 'memoizee'
 import memProfile from 'memoizee/profile'
 
@@ -18,20 +17,20 @@ export const PMT = memoize((rate, nper, pv, fv = 0, type = 0) => {
   return pmt
 })
 
-export const loanPaymentPerPeriod = ({interestRate, loanAmount, periods}: loanDataType) => (
-  -1 * PMT(interestRate, periods, loanAmount)
-)
-
-export const sum = (from: number, to: number, fn: (i: number) => number): number => {
-  return times(to - from + 1, (value) => value + from).reduce((acc, value) => acc + fn(value), 0)
+export const loanPaymentPerPeriod = ({interestRate, loanAmount, periods}: loanDataType, period: number) => {
+  if (period >= periods) {
+    return 0
+  }
+  return -1 * PMT(interestRate, periods, loanAmount)
 }
 
-const amountAtEndOfPeriod = (amountAtBeginning: number, interestRate: number, paymentPerPeriod: number): number => amountAtBeginning * (1 + interestRate) + paymentPerPeriod
+const amountAtEndOfPeriod = memoize((amountAtBeginning: number, interestRate: number, paymentPerPeriod: number): number => amountAtBeginning * (1 + interestRate) + paymentPerPeriod)
 
 export type loanDataType = {
   periods: number
   loanAmount: number
-  interestRate: number
+  interestRate: number,
+  totalPeriods: number
 }
 
 export const restOfLoan = memoize((loanData: loanDataType,
@@ -41,6 +40,9 @@ export const restOfLoan = memoize((loanData: loanDataType,
     interestRate,
     periods
   } = loanData
+  if (period >= periods) {
+    return 0
+  }
   const paymentPerPeriod = PMT(interestRate, periods, loanAmount)
   if (period === 0) {
     return loanAmount
@@ -75,9 +77,9 @@ export const interestBetween = memoize((loanData: loanDataType, fromPeriod: numb
     + restOfLoan(loanData, toPeriod - 1) * loanData.interestRate
 })
 
-export const netWorth = (loanData: loanDataType, assetData: AssetData, period: number): number => {
+export const netWorth = memoize((loanData: loanDataType, assetData: AssetData, period: number): number => {
   return assetValuation(assetData, period) - restOfLoan(loanData, period)
-}
+})
 
 export type RentData = {
   size: number,
@@ -100,7 +102,7 @@ export const rentBetweenPeriods = memoize((rentData: RentData, fromPeriod: numbe
 })
 
 const savingsPerPeriod = memoize((rentData: RentData, loanData: loanDataType, period: number): number => {
-  return loanPaymentPerPeriod(loanData) - rentInPeriod(rentData, period)
+  return loanPaymentPerPeriod(loanData, period) - rentInPeriod(rentData, period)
 })
 
 export const savingsBetweenPeriods = memoize(
@@ -204,17 +206,16 @@ type CalcEquivalentRateType = {
   rentData: RentData,
   loanData: loanDataType,
   taxData: TaxData,
-  assetData: AssetData,
-  period: number
+  assetData: AssetData
 }
 export const calculateEquivalentYield = async ({
                                                  stockData,
                                                  rentData,
                                                  loanData,
                                                  taxData,
-                                                 assetData,
-                                                 period
+                                                 assetData
                                                }: CalcEquivalentRateType) => {
+  const period = loanData.totalPeriods
   let upperLimit = 0.2
   let lowerLimit = 0
   let error = 1

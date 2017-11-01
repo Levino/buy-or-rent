@@ -14,14 +14,16 @@ const createMoneyComponent = selector => connect(state => (
   MoneyString
 )
 
-export const getMonthlyLoanPayment = (state) => {
+const getLoanPaymentInFirstPeriod = state => getMonthlyLoanPayment(state, 0)
+
+export const getMonthlyLoanPayment = (state, period: number) => {
   const loanData = getLoanData(state)
-  return loanPaymentPerPeriod(loanData)
+  return loanPaymentPerPeriod(loanData, period)
 }
 
-export const MonthlyLoanPayment = createMoneyComponent(getMonthlyLoanPayment)
+export const MonthlyLoanPayment = createMoneyComponent(getLoanPaymentInFirstPeriod)
 
-export const getAnnualLoanPayment = state => 12 * getMonthlyLoanPayment(state)
+export const getAnnualLoanPayment = state => 12 * getLoanPaymentInFirstPeriod(state)
 
 export const AnnualLoanPayment = createMoneyComponent(getAnnualLoanPayment)
 
@@ -68,7 +70,7 @@ const getMonthlyPaymentBuyer = state => getYearlyPaymentBuyer(state) / 12
 
 export const MonthlyPaymentBuyer = createMoneyComponent(getMonthlyPaymentBuyer)
 
-export const getPeriods = state => getSubState(state).periods
+export const getTotalPeriods = state => getSubState(state).timeToDeath
 
 const getEquity = state => getSubState(state).equity
 
@@ -113,10 +115,12 @@ export const AbsoluteNotaryFee = createMoneyComponent(getAbsoluteNotaryFee)
 export const getLoanData = (state): loanDataType => {
   const loanAmount = getLoan(state)
   const {interestRate, periods} = getSubState(state)
+  const totalPeriods = getSubState(state).timeToDeath
   return {
     loanAmount,
     interestRate,
-    periods
+    periods,
+    totalPeriods
   }
 }
 
