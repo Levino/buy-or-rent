@@ -182,14 +182,13 @@ const taxPerPeriod = memoize(((stockData: StockData,
   return stockGainInPeriod(stockData, rentData, loanData, taxData, stockIncreasePerPeriod, period) * taxData.capGainsTax
 }))
 
-export const taxBetweenPeriods = memoize((
-  stockData: StockData,
-  rentData: RentData,
-  loanData: loanDataType,
-  taxData: TaxData,
-  stockIncreasePerPeriod: number,
-  fromPeriod: number,
-  toPeriod: number) => {
+export const taxBetweenPeriods = memoize((stockData: StockData,
+                                          rentData: RentData,
+                                          loanData: loanDataType,
+                                          taxData: TaxData,
+                                          stockIncreasePerPeriod: number,
+                                          fromPeriod: number,
+                                          toPeriod: number) => {
   if (!(toPeriod > fromPeriod)) {
     throw new Error('toPeriod needs to be larger than fromPeriod')
   }
@@ -209,12 +208,13 @@ type CalcEquivalentRateType = {
   period: number
 }
 export const calculateEquivalentYield = async ({
-  stockData,
-  rentData,
-  loanData,
-  taxData,
-  assetData,
-  period}: CalcEquivalentRateType) => {
+                                                 stockData,
+                                                 rentData,
+                                                 loanData,
+                                                 taxData,
+                                                 assetData,
+                                                 period
+                                               }: CalcEquivalentRateType) => {
   let upperLimit = 0.2
   let lowerLimit = 0
   let error = 1
