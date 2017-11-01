@@ -4,7 +4,7 @@ describe('Helpers tests', () => {
     describe('Loan Payments tests', () => {
         it('should calculate the correct loan payments', () => {
             const periods = 1
-            const payment = loanPaymentPerPeriod({interestRate: 0.02 / 12, loan: 500000, periods: periods * 12})
+            const payment = loanPaymentPerPeriod({interestRate: 0.02 / 12, loanAmount: 500000, periods: periods * 12})
             expect(Math.round(payment * 100) / 100).toEqual(42119.43)
         })
     })

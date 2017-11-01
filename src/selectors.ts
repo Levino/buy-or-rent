@@ -16,7 +16,7 @@ export const getMonthlyLoanPayment = (state) => {
   const periods = getPeriods(state)
   const interestRate = getInterestRate(state)
   const loan = getLoan(state)
-  return loanPaymentPerPeriod({periods, interestRate, loan})
+  return loanPaymentPerPeriod({periods, interestRate, loanAmount: loan})
 }
 
 export const MonthlyLoanPayment = createMoneyComponent(getMonthlyLoanPayment)
@@ -210,7 +210,7 @@ export const getPropertyAssetData = (state): IassetData => {
 }
 
 export const getRentData = (state: any): RentData => {
-  const subState= getSubState(state)
+  const subState = getSubState(state)
   const {
     rentPricePerSM,
     rentIncreasePerPeriod,

@@ -1,21 +1,24 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Component } from 'react'
-import { rentBetweenPeriods } from '../helpers'
-import { getRentData } from '../selectors'
+import { rentBetweenPeriods, savingsBetweenPeriods } from '../helpers'
+import { getLoanData, getRentData } from '../selectors'
 import { MoneyString } from '../helperComponents'
 
 interface TenantRowInterface {
-  rent: number
+  rent: number,
+  savings: number
 }
 
 class TenantRow extends Component<TenantRowInterface> {
   render() {
     const {
-      rent
+      rent,
+      savings
     } = this.props
     return [
-      <td style={{textAlign: 'right'}}><MoneyString value={rent}/></td>
+      <td key="rent" style={{textAlign: 'right'}}><MoneyString value={rent}/></td>,
+      <td key="savings" style={{textAlign: 'right'}}><MoneyString value={savings}/></td>
     ]
   }
 }
@@ -27,9 +30,12 @@ type TenantRowOwnProps = {
 
 const mapStateToProps = (state, {period, periodGap}: TenantRowOwnProps) => {
   const rentData = getRentData(state)
+  const loanData = getLoanData(state)
   const rent = rentBetweenPeriods(rentData, period, period + periodGap)
+  const savings = savingsBetweenPeriods(rentData, loanData, period, period + periodGap)
   return {
-    rent
+    rent,
+    savings
   }
 }
 

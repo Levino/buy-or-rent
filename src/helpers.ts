@@ -18,14 +18,8 @@ export const PMT = memoize((rate, nper, pv, fv = 0, type = 0) => {
   return pmt
 })
 
-type loanPaymentPerPeriodInterface = {
-  interestRate: number
-  loan: number
-  periods: number
-}
-
-export const loanPaymentPerPeriod = ({interestRate, loan, periods}: loanPaymentPerPeriodInterface) => (
-  -1 * PMT(interestRate, periods, loan)
+export const loanPaymentPerPeriod = ({interestRate, loanAmount, periods}: loanDataType) => (
+  -1 * PMT(interestRate, periods, loanAmount)
 )
 
 const roundMoney = value => Math.round(value * 100) / 100
@@ -33,7 +27,7 @@ const roundMoney = value => Math.round(value * 100) / 100
 export const loanPayments = ({interestRate, loan, periods}) => {
   let loanAtBeginningOfYear = loan
   let loanAtEndOfYear
-  const amountMonthlyLoanPayment = loanPaymentPerPeriod({interestRate, loan, periods})
+  const amountMonthlyLoanPayment = loanPaymentPerPeriod({interestRate, loanAmount: loan, periods})
   return times(periods).map(year => {
     let loanAtBeginningOfMonth = loanAtBeginningOfYear
     let loanAtEndOfMonth
@@ -313,5 +307,28 @@ export const rentBetweenPeriods = memoize((rentData: RentData, fromPeriod: numbe
   if ((toPeriod - fromPeriod) === 1) {
     return rentInPeriod(rentData, fromPeriod)
   }
-  return rentBetweenPeriods(rentData, fromPeriod, toPeriod -1 ) + rentInPeriod(rentData, toPeriod)
+  return rentBetweenPeriods(rentData, fromPeriod, toPeriod - 1) + rentInPeriod(rentData, toPeriod)
 })
+
+const savingsPerPeriod = memoize((rentData: RentData, loanData: loanDataType, period: number): number => {
+  return loanPaymentPerPeriod(loanData) - rentInPeriod(rentData, period)
+})
+
+export const savingsBetweenPeriods = memoize(
+  (
+    rentData: RentData,
+    loanData: loanDataType,
+    fromPeriod: number,
+    toPeriod: number
+  ): number => {
+    if ((toPeriod - fromPeriod) === 1) {
+      return savingsPerPeriod(rentData, loanData, fromPeriod)
+    }
+    return savingsBetweenPeriods(
+      rentData,
+      loanData,
+      fromPeriod,
+      toPeriod - 1) +
+      savingsPerPeriod(rentData, loanData, toPeriod)
+  }
+)
