@@ -18,7 +18,7 @@ describe('Helpers tests', () => {
     it('should calculate correct rest of loan after 1 period', () => {
       const payment = loanPaymentPerPeriod(createLoanData(), 1)
       expect(Math.round(restOfLoan(createLoanData(), 1) * 100) / 100).toEqual(
-        Math.round((20000 * (1 + 0.05) - payment) * 100)/ 100
+        Math.round((20000 * (1 + 0.05) - payment) * 100) / 100)
     })
   })
 })
