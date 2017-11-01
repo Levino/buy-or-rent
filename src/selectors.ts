@@ -1,11 +1,10 @@
 import { connect } from 'react-redux'
 
 import {
-  loanPaymentPerPeriod, allValues, loanDataType, AssetData, RentData,
+  loanPaymentPerPeriod, loanDataType, AssetData, RentData,
   StockData, TaxData
 } from './helpers'
 import { MoneyString } from './helperComponents'
-import { getEquivalentRate } from './equivalentRate'
 
 const getSubState = state => state.form.mainForm.values
 
@@ -16,10 +15,8 @@ const createMoneyComponent = selector => connect(state => (
 )
 
 export const getMonthlyLoanPayment = (state) => {
-  const periods = getPeriods(state)
-  const interestRate = getInterestRate(state)
-  const loan = getLoan(state)
-  return loanPaymentPerPeriod({periods, interestRate, loanAmount: loan})
+  const loanData = getLoanData(state)
+  return loanPaymentPerPeriod(loanData)
 }
 
 export const MonthlyLoanPayment = createMoneyComponent(getMonthlyLoanPayment)
@@ -81,44 +78,7 @@ export const getLoan = state => grossPrice(state) - getEquity(state)
 
 export const Loan = createMoneyComponent(getLoan)
 
-export const getInterestRate = state => getSubState(state).interestRate
-
-const getTimeToDeath = state => getSubState(state).timeToDeath
-
 const getEquityPriceIncrease = state => getSubState(state).equityPriceIncrease
-
-const getRentIncreasePerYear = state => getSubState(state).rentIncreasePerYear
-
-export const getAllValues = state => {
-  const periods = getPeriods(state)
-  const interestRate = getInterestRate(state)
-  const loan = getLoan(state)
-  const timeToDeath = getTimeToDeath(state)
-  const valueAtBeginning = getNetPrice(state)
-  const equityPriceIncrease = getEquityPriceIncrease(state)
-  const rentAtBeginning = getRentPerYear(state)
-  const yearlyRentIncrease = getRentIncreasePerYear(state)
-  const equivalentRate = getEquivalentRate(state)
-  const equity = getEquity(state)
-  const monthlyPaymentRepayment = getMonthlyPaymentBuyer(state)
-  const monthlyPaymentAfterRepayment = getMonthlyInvestmentPayment(state)
-  return allValues({
-    repaymentPeriods: periods,
-    interestRate,
-    loan,
-    timeToDeath,
-    valueAtBeginning,
-    yearlyRentIncrease,
-    rentAtBeginning,
-    equityPriceIncrease,
-    equivalentRate,
-    equity,
-    monthlyPaymentRepayment,
-    monthlyPaymentAfterRepayment,
-    transactionCost: 0,
-    timeBetweenTransactions: 0
-  })
-}
 
 const getBrokerFee = state => getSubState(state).brokerFee
 
@@ -149,20 +109,6 @@ const getAbsoluteNotaryFee = state => {
 }
 
 export const AbsoluteNotaryFee = createMoneyComponent(getAbsoluteNotaryFee)
-
-const getRentPerYear = state => {
-  const {
-    size,
-    rentPricePerSM
-  } = getSubState(state)
-  return 12 * size * rentPricePerSM
-}
-
-export const RentPerYear = createMoneyComponent(getRentPerYear)
-
-const getRentPerMonth = state => getRentPerYear(state) / 12
-
-export const RentPerMonth = createMoneyComponent(getRentPerMonth)
 
 export const getLoanData = (state): loanDataType => {
   const loanAmount = getLoan(state)
