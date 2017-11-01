@@ -27,7 +27,7 @@ const HeadRowYear = () => (
     {/* Mieter */}
     <th style={{textAlign: 'right'}}>Jahresmiete</th>
     <th style={{textAlign: 'right'}}>Sparrate</th>
-    <th style={{textAlign: 'right'}}>Rendite</th>
+    <th style={{textAlign: 'right'}}>Zuwachs Aktienvermögen</th>
     <th style={{textAlign: 'right'}}>Steuern</th>
     <th style={{textAlign: 'right'}}>Aktienvermögen Jahresende</th>
     <th style={{textAlign: 'right'}}>Networth</th>

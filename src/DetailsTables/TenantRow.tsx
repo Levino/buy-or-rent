@@ -42,7 +42,7 @@ type TenantRowOwnProps = {
 
 const mapStateToProps = (state, {period, periodGap}: TenantRowOwnProps) => {
   const data = getTheData(state)
-  const rent = rentBetweenPeriods(data, period, period + periodGap)
+  const rent = rentBetweenPeriods(data, period - 1, period - 1 + periodGap)
   const savings = savingsBetweenPeriods(data, period, period + periodGap)
   const stockValue = stockValueInPeriod(data, period + periodGap)
   const stockGain = stockGainBetweenPeriods(data, period, period + periodGap)
