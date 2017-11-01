@@ -82,9 +82,9 @@ const MainForm = () => (
         />
         <CustomFormGroup
           addon="% pro Jahr"
-          {...percentParsing}
+          {...interestRateParsing}
           label="Mietsteigerung pro Jahr"
-          name="rentIncreasePerYear"
+          name="rentIncreasePerPeriod"
         />
       </Col>
     </Row>
@@ -107,6 +107,6 @@ export default reduxForm({
     propertyPurchaseTax: 0.065,
     timeToDeath: 50 * 12,
     equityPriceIncrease: 0.02 / 12,
-    rentIncreasePerYear: 0.02
+    rentIncreasePerPeriod: 0.02 / 12
   }
 })(MainForm)

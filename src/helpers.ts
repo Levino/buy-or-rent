@@ -295,3 +295,23 @@ export const interestBetween = memoize((loanData: loanDataType, fromPeriod: numb
 export const netWorth = (loanData: loanDataType, assetData: IassetData, period: number): number => {
   return assetValuation(assetData, period) - restOfLoan(loanData, period)
 }
+
+export type RentData = {
+  size: number,
+  rentPricePerSM: number,
+  rentIncreasePerPeriod: number
+}
+
+const rentInPeriod = memoize((rentData: RentData, period) => {
+  if (period === 0) {
+    return rentData.rentPricePerSM * rentData.size
+  }
+  return rentInPeriod(rentData, period - 1)  * (1 + rentData.rentIncreasePerPeriod)
+})
+
+export const rentBetweenPeriods = memoize((rentData: RentData, fromPeriod: number, toPeriod: number) => {
+  if ((toPeriod - fromPeriod) === 1) {
+    return rentInPeriod(rentData, fromPeriod)
+  }
+  return rentBetweenPeriods(rentData, fromPeriod, toPeriod -1 ) + rentInPeriod(rentData, toPeriod)
+})

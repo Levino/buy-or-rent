@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { times } from 'lodash'
 
 import BuyerRow from './BuyerRow'
+import TenantRow from './TenantRow'
 
 interface DetailsTableProps {
   periods: number,
@@ -39,7 +40,6 @@ const DetailsTable = ({periods, format = 'years'}: DetailsTableProps) => {
       <th style={{textAlign: 'right'}}>Networth</th>
       {/* Mieter */}
       <th style={{textAlign: 'right'}}>Jahresmiete</th>
-      <th style={{textAlign: 'right'}}>Monatsmiete</th>
       <th style={{textAlign: 'right'}}>Sparrate</th>
       <th style={{textAlign: 'right'}}>Rendite</th>
       <th style={{textAlign: 'right'}}>Steuern</th>
@@ -54,6 +54,7 @@ const DetailsTable = ({periods, format = 'years'}: DetailsTableProps) => {
           <td>{(format === 'years') ? periodToYear(period) : period + 1}</td>
           {/* Käufer */}
           <BuyerRow period={period} periodGap={periodGap}/>
+          <TenantRow period={period} periodGap={periodGap}/>
         </tr>
       ))
     }
