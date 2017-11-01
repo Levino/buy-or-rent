@@ -40,7 +40,7 @@ const LoanPaymentsComponent = ({
     loanPayment *= 12
     periodGap = 12
   }
-  return <Table size="sm" bordered={true}>
+  return <Table size="sm" bordered={true} responsive={true}>
     <thead>
     <tr>
       <th/>
