@@ -1,14 +1,10 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Component } from 'react'
-import {
-  rentBetweenPeriods, savingsBetweenPeriods, stockGainBetweenPeriods, stockValueInPeriod,
-  taxBetweenPeriods
-} from '../helpers'
-import { getTheData } from '../selectors'
+import { getPeriods } from '../selectors'
 import { MoneyString } from '../helperComponents'
 
-interface TenantRowInterface {
+export interface TenantRowInterface {
   rent: number,
   savings: number,
   stockValue: number,
@@ -35,25 +31,17 @@ class TenantRow extends Component<TenantRowInterface> {
   }
 }
 
-type TenantRowOwnProps = {
+export type TenantRowOwnProps = {
     period: number,
-    periodGap: number
+    years: boolean
 }
 
-const mapStateToProps = (state, {period, periodGap}: TenantRowOwnProps) => {
-  const data = getTheData(state)
-  const rent = rentBetweenPeriods(data, period - 1, period - 1 + periodGap)
-  const savings = savingsBetweenPeriods(data, period, period + periodGap)
-  const stockValue = stockValueInPeriod(data, period + periodGap)
-  const stockGain = stockGainBetweenPeriods(data, period, period + periodGap)
-  const tax = taxBetweenPeriods(data, period, period + periodGap)
-  return {
-    rent,
-    savings,
-    stockValue,
-    stockGain,
-    tax
+const mapStateToProps = (state, {years, period}: TenantRowOwnProps): TenantRowInterface => {
+  let timeframe = 'months'
+  if (years) {
+    timeframe = 'years'
   }
+  return getPeriods(state)[timeframe][period].tenantData
 }
 
 export default connect(mapStateToProps)(TenantRow)

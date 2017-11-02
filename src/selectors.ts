@@ -5,7 +5,9 @@ import {
   StockData, TaxData, theData
 } from './helpers'
 import { MoneyString } from './helperComponents'
-import { getEquivalentRate } from './equivalentRate'
+import { getEquivalentRate } from './reducers'
+import { TenantRowInterface } from './DetailsTables/TenantRow'
+import { BuyerRowInterface } from './DetailsTables/BuyerRow'
 
 const getSubState = state => state.form.mainForm.values
 
@@ -175,3 +177,15 @@ export const getTheData = (state): theData => ({
   assetData: getPropertyAssetData(state),
   loanData: getLoanData(state)
 })
+
+type period = {
+  buyerData: BuyerRowInterface,
+  tenantData: TenantRowInterface
+}
+
+type periodsObject = {
+  months: [period]
+  years: [period]
+}
+
+export const getPeriods = (state): periodsObject => state.periods

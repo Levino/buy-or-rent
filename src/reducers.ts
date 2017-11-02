@@ -2,7 +2,8 @@ import { types } from './sagas'
 
 const {
   EQUIVALENT_RATE_CALCULATION_SUCCEEDED,
-  EQUIVALENT_RATE_CALCULATION_REQUESTED
+  EQUIVALENT_RATE_CALCULATION_REQUESTED,
+  CALCULATE_PERIODS_SUCCEEDED
 } = types
 
 export const equivalentRate = (state = {rate: 10 / 12, status: 'done'}, action) => {
@@ -17,6 +18,13 @@ export const equivalentRate = (state = {rate: 10 / 12, status: 'done'}, action) 
       ...state,
       status: 'calculating'
     }
+  }
+  return state
+}
+
+export const periods = (state = {}, action) => {
+  if (action.type === CALCULATE_PERIODS_SUCCEEDED) {
+    return action.value
   }
   return state
 }

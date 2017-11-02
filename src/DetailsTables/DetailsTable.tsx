@@ -4,8 +4,8 @@ import { getTotalPeriods } from '../selectors'
 import { connect } from 'react-redux'
 import { times } from 'lodash'
 
-import BuyerRow from './BuyerRow'
 import TenantRow from './TenantRow'
+import BuyerRow from './BuyerRow'
 
 interface DetailsTableProps {
   periods: number,
@@ -57,10 +57,8 @@ const HeadRowMonth = () => (
 const DetailsTable = ({periods, format = 'years'}: DetailsTableProps) => {
   // If format is years then we only want to render every 12th period
   let periodsArray = times(periods)
-  let periodGap = 1
   if (format === 'years') {
-    periodsArray = periodsArray.filter(period => (period % 12 === 0))
-    periodGap = 12
+    periodsArray = times(periods / 12)
   } else {
     periodsArray = times(10)
   }
@@ -79,8 +77,8 @@ const DetailsTable = ({periods, format = 'years'}: DetailsTableProps) => {
         <tr key={period}>
           <td>{(format === 'years') ? periodToYear(period) : period + 1}</td>
           {/* Käufer */}
-          <BuyerRow period={period} periodGap={periodGap}/>
-          <TenantRow period={period} periodGap={periodGap}/>
+          <BuyerRow period={period} years={format === 'years'}/>
+          <TenantRow period={period} years={format === 'years'}/>
         </tr>
       ))
     }
