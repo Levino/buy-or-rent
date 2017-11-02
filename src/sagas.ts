@@ -2,7 +2,8 @@ import { call, put, takeLatest, select } from 'redux-saga/effects'
 import { times } from 'lodash'
 import { getTheData } from './selectors'
 import {
-  assetValuation, calculateEquivalentYield, interestBetween, loanPaymentPerPeriod, netWorth, rentBetweenPeriods,
+  assetValuation, buyerPaymentsBetween, calculateEquivalentYield, interestBetween, netWorth,
+  rentBetweenPeriods,
   restOfLoan,
   savingsBetweenPeriods, stockGainBetweenPeriods, stockValueInPeriod, taxBetweenPeriods,
   theData
@@ -65,7 +66,7 @@ const createPeriodsObject = async (data: theData) => {
     times(periods).map(aPeriod => aPeriod * periodGap).map(period => ({
       buyerData: {
         loanAmountAtBeginning: restOfLoan(data, period),
-        loanPayment: loanPaymentPerPeriod(data, period),
+        loanPayment: buyerPaymentsBetween(data, period, period + periodGap),
         interest: interestBetween(data, period, period + periodGap),
         loanAmountAtEnd: restOfLoan(data, period + periodGap),
         houseValue: assetValuation(data, period + periodGap),

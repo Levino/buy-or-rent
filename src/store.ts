@@ -16,7 +16,8 @@ const createPeriods = (periodGap, periods) => (
       stockValue: 0,
       stockGain: 0,
       tax: 0
-    }
+    },
+    calculating: false
   }))
 )
 const createDefaultPeriods = () => ({

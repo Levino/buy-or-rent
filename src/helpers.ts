@@ -10,8 +10,8 @@ export type loanDataType = {
 export type AssetData = {
   equity: number
   yieldPerPeriod: number
+  investmentReserve: number
 }
-
 
 export type StockData = {
   equity: number
@@ -52,14 +52,36 @@ export const PMT = memoize((rate, nper, pv, fv = 0, type = 0) => {
 
 export const loanPaymentPerPeriod = (data: theData, period: number) => {
   const {
-    periods,
-    interestRate,
-    loanAmount
-  } = data.loanData
-  if (period >= periods) {
+    loanData: {
+      periods,
+      interestRate,
+      loanAmount
+    }
+  } = data
+  let loanPayment
+  if (period <= periods) {
+    loanPayment = -1 * PMT(interestRate, periods, loanAmount)
+  } else {
+    loanPayment = 0
+  }
+  return loanPayment
+}
+
+const loanPaymentUntil = (data: theData, period: number) => {
+  const {
+    assetData: {
+      equity,
+      investmentReserve
+    }
+  } = data
+  if (period === 0) {
     return 0
   }
-  return -1 * PMT(interestRate, periods, loanAmount)
+  return loanPaymentUntil(data, period - 1) + loanPaymentPerPeriod(data, period) + equity * investmentReserve
+}
+
+export const buyerPaymentsBetween = (data: theData, fromPeriod: number, toPeriod: number) => {
+  return loanPaymentUntil(data, toPeriod) - loanPaymentUntil(data, fromPeriod)
 }
 
 const amountAtEndOfPeriod = memoize((amountAtBeginning: number, interestRate: number, paymentPerPeriod: number): number => amountAtBeginning * (1 + interestRate) + paymentPerPeriod)
@@ -128,7 +150,7 @@ const savingsUntilPeriod = memoize((data: theData, period: number): number => {
     return 0
   }
   const savingsUntilLastPeriod = savingsUntilPeriod(data, period - 1)
-  const savingsThisPeriod = loanPaymentPerPeriod(data, period) - rentBetweenPeriods(data, period - 2, period - 1)
+  const savingsThisPeriod = buyerPaymentsBetween(data, period -1, period) - rentBetweenPeriods(data, period - 2, period - 1)
   return savingsUntilLastPeriod + savingsThisPeriod
 })
 
@@ -158,7 +180,7 @@ export const stockGainBetweenPeriods = memoize((data: theData,
                                                 fromPeriod: number,
                                                 toPeriod: number) => {
   return stockValueInPeriod(data, toPeriod)
-  - stockValueInPeriod(data, fromPeriod)
+    - stockValueInPeriod(data, fromPeriod)
 })
 
 const taxUntilPeriod = memoize(((data: theData,
@@ -193,7 +215,7 @@ export const calculateEquivalentYield = async (data: theData) => {
           ...data.stockData,
           stockIncreasePerPeriod: approximationValue
         }
-        }, period)
+      }, period)
       error = netWorthTenant - netWorthBuyer
       if (error > 0) {
         upperLimit = approximationValue

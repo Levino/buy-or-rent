@@ -19,7 +19,7 @@ const HeadRowYear = () => (
     <th>Jahr</th>
     {/* Käufer */}
     <th style={{textAlign: 'right'}}>Schulden Jahresbeginn</th>
-    <th style={{textAlign: 'right'}}>Tilgung</th>
+    <th style={{textAlign: 'right'}}>Belastung pro Jahr</th>
     <th style={{textAlign: 'right'}}>Zinsen</th>
     <th style={{textAlign: 'right'}}>Schulden Jahresende</th>
     <th style={{textAlign: 'right'}}>Wert Immobilie Jahresende</th>
@@ -30,7 +30,6 @@ const HeadRowYear = () => (
     <th style={{textAlign: 'right'}}>Zuwachs Aktienvermögen</th>
     <th style={{textAlign: 'right'}}>Steuern</th>
     <th style={{textAlign: 'right'}}>Aktienvermögen Jahresende</th>
-    <th style={{textAlign: 'right'}}>Networth</th>
   </tr>
 )
 
@@ -39,7 +38,7 @@ const HeadRowMonth = () => (
     <th>Jahr</th>
     {/* Käufer */}
     <th style={{textAlign: 'right'}}>Schulden Monatsbeginn</th>
-    <th style={{textAlign: 'right'}}>Tilgung</th>
+    <th style={{textAlign: 'right'}}>Belastung pro Monat</th>
     <th style={{textAlign: 'right'}}>Zinsen</th>
     <th style={{textAlign: 'right'}}>Schulden Monatsende</th>
     <th style={{textAlign: 'right'}}>Wert Immobilie Monatsende</th>
@@ -50,7 +49,6 @@ const HeadRowMonth = () => (
     <th style={{textAlign: 'right'}}>Rendite</th>
     <th style={{textAlign: 'right'}}>Steuern</th>
     <th style={{textAlign: 'right'}}>Aktienvermögen Monatsende</th>
-    <th style={{textAlign: 'right'}}>Networth</th>
   </tr>
 )
 

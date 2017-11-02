@@ -130,9 +130,13 @@ export const getLoanData = (state): loanDataType => {
 export const getPropertyAssetData = (state): AssetData => {
   const equity = getNetPrice(state)
   const yieldPerPeriod = getEquityPriceIncrease(state)
+  const {
+    investmentReserve
+  } = getSubState(state)
   return {
     equity,
-    yieldPerPeriod
+    yieldPerPeriod,
+    investmentReserve
   }
 }
 

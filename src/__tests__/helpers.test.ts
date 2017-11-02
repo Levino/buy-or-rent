@@ -21,7 +21,8 @@ const createLoanData = () => {
 const createAssetData = () => {
   return {
     yieldPerPeriod: 0.02 / 12,
-    equity: 300000
+    equity: 300000,
+    investmentReserve: 0.01 / 12
   }
 }
 

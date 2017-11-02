@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { Field, reduxForm } from 'redux-form'
-import { Row, Col, Form, FormGroup, Label, InputGroup, InputGroupAddon } from 'reactstrap'
+import { Row, Col, Form, FormGroup, Label, InputGroup, InputGroupAddon, Button } from 'reactstrap'
 import { actions } from './sagas'
+import { connect } from 'react-redux'
 
 interface ICustomFormGroup {
   addon?: {}
@@ -52,7 +53,7 @@ const yearParsing = {
   format: value => Math.round(value / 12)
 }
 
-const MainForm = () => (
+const MainForm = ({handleSubmit, calculating}) => (
   <Form>
     <Row>
       <Col md={6}>
@@ -89,11 +90,22 @@ const MainForm = () => (
         />
       </Col>
     </Row>
+    <Button color="primary" disabled={calculating} onClick={handleSubmit}>Submit</Button>
   </Form>
 )
 
+const mapStateToProps = (state, ownProps) => {
+  return {
+    ...ownProps,
+    calculating: state.periods.calculating || (state.equivalentRate.status === 'calculating')
+  }
+}
+
+const Wrapper = connect(
+  mapStateToProps
+)(MainForm)
+
 export default reduxForm({
   form: 'mainForm',
-  onChange: (values, dispatch) =>
-    dispatch(actions.calculateEquivYield())
-})(MainForm)
+  onSubmit: (values, dispatch) => dispatch(actions.calculateEquivYield())
+})(Wrapper)
