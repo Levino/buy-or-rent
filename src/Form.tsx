@@ -90,7 +90,7 @@ const MainForm = ({handleSubmit, calculating}) => (
         />
       </Col>
     </Row>
-    <Button color="primary" disabled={calculating} onClick={handleSubmit}>Submit</Button>
+    <Button color="primary" disabled={calculating} onClick={handleSubmit}>Berechnen</Button>
   </Form>
 )
 
