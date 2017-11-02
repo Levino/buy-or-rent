@@ -94,5 +94,6 @@ const MainForm = () => (
 
 export default reduxForm({
   form: 'mainForm',
-  onChange: (values, dispatch) => dispatch(actions.calculateEquivYield())
+  onChange: (values, dispatch) =>
+    dispatch(actions.calculateEquivYield())
 })(MainForm)

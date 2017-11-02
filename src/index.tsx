@@ -8,10 +8,11 @@ import registerServiceWorker from './registerServiceWorker'
 import { equivalentRate, periods } from './reducers'
 import { actions, calculatePeriodsSaga, calcRateSaga } from './sagas'
 
-import { createStore, combineReducers, applyMiddleware } from 'redux'
+import { createStore, compose, combineReducers, applyMiddleware } from 'redux'
 import { reducer as formReducer } from 'redux-form'
 import createSagaMiddleware from 'redux-saga'
 import { createInitialState } from './store'
+declare var window:any;
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -24,10 +25,13 @@ const rootReducer = combineReducers({
   form: formReducer
 })
 
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
 const store = createStore(
   rootReducer,
   createInitialState(),
-  applyMiddleware(sagaMiddleware)
+  composeEnhancers(
+  applyMiddleware(sagaMiddleware))
 )
 sagaMiddleware.run(calcRateSaga)
 sagaMiddleware.run(calculatePeriodsSaga)

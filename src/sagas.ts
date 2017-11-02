@@ -30,6 +30,7 @@ function* calculateEquivalentRateGenerator(): any {
   try {
     const stockYield = yield call(calculateEquivalentYield, data)
     yield put({type: EQUIVALENT_RATE_CALCULATION_SUCCEEDED, value: stockYield})
+    yield put(actions.calculatePeriods())
   } catch (e) {
     yield put({type: EQUIVALENT_RATE_CALCULATION_FAILED, message: e.message})
   }
@@ -42,7 +43,7 @@ function* calculateEquivalentRateGenerator(): any {
   dispatched while a fetch is already pending, that pending fetch is cancelled
   and only the latest one will be run.
 */
-export function* calcRateSaga() {
+export function* calcRateSaga(): any {
   yield takeLatest(EQUIVALENT_RATE_CALCULATION_REQUESTED, calculateEquivalentRateGenerator)
 }
 
@@ -60,8 +61,8 @@ export const actions = {
 }
 
 const createPeriodsObject = async (data: theData) => {
-  const createPeriods = (periodGap: number) => (
-    times(data.loanData.totalPeriods).map((period) => ({
+  const createPeriods = (periods, periodGap: number) => (
+    times(periods).map(aPeriod => aPeriod * periodGap).map(period => ({
       buyerData: {
         loanAmountAtBeginning: restOfLoan(data, period),
         loanPayment: loanPaymentPerPeriod(data, period),
@@ -80,8 +81,8 @@ const createPeriodsObject = async (data: theData) => {
     }))
   )
   return {
-    years: createPeriods(12),
-    months: createPeriods(1)
+    years: createPeriods(data.loanData.totalPeriods / 12, 12),
+    months: createPeriods(data.loanData.totalPeriods, 1)
   }
 }
 

@@ -12,7 +12,7 @@ interface DetailsTableProps {
   format?: 'years' | 'months'
 }
 
-const periodToYear = period => Math.round((period + 1 ) / 12 + 2018)
+const periodToYear = period => Math.round(period + 2018)
 
 const HeadRowYear = () => (
   <tr>
