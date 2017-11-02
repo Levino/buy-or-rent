@@ -1,8 +1,4 @@
 import * as memoize from 'memoizee'
-import memProfile from 'memoizee/profile'
-
-(<any> window).memProfile = memProfile
-
 
 export type loanDataType = {
   periods: number
@@ -25,7 +21,6 @@ export type StockData = {
 export type TaxData = {
   capGainsTax: number
 }
-
 
 export type RentData = {
   size: number,
