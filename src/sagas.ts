@@ -61,7 +61,7 @@ export const actions = {
   }
 }
 
-const createPeriodsObject = async (data: theData) => {
+export const createPeriodsObject = (data: theData) => {
   const createPeriods = (periods, periodGap: number) => (
     times(periods).map(aPeriod => aPeriod * periodGap).map(period => ({
       buyerData: {
