@@ -31,7 +31,7 @@ function* calculateEquivalentRateGenerator(): any {
   try {
     const stockYield = yield call(calculateEquivalentYield, data)
     yield put({type: EQUIVALENT_RATE_CALCULATION_SUCCEEDED, value: stockYield})
-    yield take(calculatePeriodsGenerator)
+    yield call(calculatePeriodsGenerator)
   } catch (e) {
     yield put({type: EQUIVALENT_RATE_CALCULATION_FAILED, message: e.message})
   }

@@ -198,7 +198,7 @@ export const taxBetweenPeriods = memoize((data: theData,
   return taxUntilPeriod(data, toPeriod) - taxUntilPeriod(data, fromPeriod)
 })
 
-export const calculateEquivalentYield = async (data: theData) => {
+export const calculateEquivalentYield = memoize(async (data: theData) => {
   const period = data.loanData.totalPeriods
   let upperLimit = 0.2
   let lowerLimit = 0
@@ -234,4 +234,4 @@ export const calculateEquivalentYield = async (data: theData) => {
     await iteration()
   } while (Math.abs(error) > 0.001)
   return approximationValue
-}
+}, {promise: true})
