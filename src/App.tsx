@@ -4,11 +4,12 @@ import DetailsTable from './DetailsTables'
 import Form from './Form'
 import Result from './Result/index'
 import Head from 'next/head'
-
+import TotalTax from './TotalTax'
 const App = () =>
       <Container fluid={true}>
         <Head>
           <meta charSet="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link
             rel="stylesheet"
             href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
@@ -18,6 +19,12 @@ const App = () =>
           <Col>
             <h3>Kaufen oder mieten?</h3>
             <p>Berechnen Sie, ob Sie lieber kaufen oder mieten sollten.</p>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <h3>Totale Steuern Mieter</h3>
+            <p><TotalTax/></p>
           </Col>
         </Row>
         <Row>

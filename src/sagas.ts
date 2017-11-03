@@ -83,7 +83,8 @@ export const createPeriodsObject = (data: theData) => {
   )
   return {
     years: createPeriods(data.loanData.totalPeriods / 12, 12),
-    months: createPeriods(data.loanData.totalPeriods, 1)
+    months: createPeriods(data.loanData.totalPeriods, 1),
+    totalTax: taxBetweenPeriods(data, 0, data.loanData.totalPeriods)
   }
 }
 
