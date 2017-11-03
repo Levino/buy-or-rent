@@ -14,7 +14,8 @@
     "noImplicitAny": false,
     "strictNullChecks": false,
     "suppressImplicitAnyIndexErrors": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "allowSyntheticDefaultImports": true
   },
   "exclude": [
     "node_modules",
@@ -24,6 +25,7 @@
     "webpack",
     "jest",
     "src/setupTests.ts",
-    "next.config.js"
+    "next.config.js",
+    ".next"
   ]
 }

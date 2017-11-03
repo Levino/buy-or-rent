@@ -1,4 +1,4 @@
-import { call, put, select, takeLatest } from 'redux-saga/effects'
+import { call, put, select, take, takeLatest } from 'redux-saga/effects'
 import { times } from 'lodash'
 import { getTheData } from './selectors'
 import {
@@ -31,7 +31,7 @@ function* calculateEquivalentRateGenerator(): any {
   try {
     const stockYield = yield call(calculateEquivalentYield, data)
     yield put({type: EQUIVALENT_RATE_CALCULATION_SUCCEEDED, value: stockYield})
-    yield put(actions.calculatePeriods())
+    yield take(calculatePeriodsGenerator)
   } catch (e) {
     yield put({type: EQUIVALENT_RATE_CALCULATION_FAILED, message: e.message})
   }
@@ -99,4 +99,9 @@ function* calculatePeriodsGenerator():any {
 }
 export function* calculatePeriodsSaga() {
   yield takeLatest(CALCULATE_PERIODS_REQUESTED, calculatePeriodsGenerator)
+}
+
+export function* rootSaga () {
+  yield takeLatest(CALCULATE_PERIODS_REQUESTED, calculatePeriodsGenerator),
+  yield takeLatest(EQUIVALENT_RATE_CALCULATION_REQUESTED, calculateEquivalentRateGenerator)
 }

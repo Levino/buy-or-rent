@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "bootstrap": "4.0.0-beta.2",
+    "intl": "^1.2.5",
+    "intl-locales-supported": "^1.0.0",
     "lodash": "^4.17.4",
     "memoizee": "^0.4.11",
     "next": "^4.1.4",
@@ -11,6 +13,7 @@
     "next-redux-wrapper": "^1.3.4",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
+    "react-intl": "^2.4.0",
     "react-redux": "^5.0.6",
     "react-scripts-ts": "2.8.0",
     "react-transition-group": "^2.2.1",
@@ -21,10 +24,9 @@
   },
   "scripts": {
     "dev": "concurrently \"tsc --watch\" next",
-    "build": "tsc && next build",
+    "build": "next build",
     "start": "next start",
     "test": "jest",
-    "eject": "react-scripts-ts eject",
     "deploy": "surge -p ./build",
     "predeploy": "npm run build"
   },
@@ -42,7 +44,9 @@
     "jest": "^21.2.1",
     "surge": "^0.19.0",
     "ts-jest": "^21.1.4",
-    "tslint": "^5.8.0"
+    "tslint": "^5.8.0",
+    "tslint-react": "^3.2.0",
+    "typescript": "^2.6.1"
   },
   "jest": {
     "moduleFileExtensions": [

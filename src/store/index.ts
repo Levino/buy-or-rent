@@ -1,15 +1,14 @@
 import nextReduxSaga from 'next-redux-saga'
 import withRedux from 'next-redux-wrapper'
 import { equivalentRate, periods } from '../reducers'
-import { calculatePeriodsSaga, calcRateSaga } from '../sagas'
-
 import { createStore, compose, combineReducers, applyMiddleware } from 'redux'
 import { reducer as formReducer } from 'redux-form'
 import createSagaMiddleware from 'redux-saga'
 import createInitialState from './initialState'
+import { rootSaga } from '../sagas'
 declare var window:any
 
-const sagaMiddleware = createSagaMiddleware()
+export const sagaMiddleware = createSagaMiddleware()
 
 const rootReducer = combineReducers({
   // ...your other reducers here
@@ -22,15 +21,15 @@ const rootReducer = combineReducers({
 
 const composeEnhancers = typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
-export const configureStore = () => {
-  const store = createStore(
+export const configureStore = (initialState = createInitialState() ) => {
+  const store: any = createStore(
     rootReducer,
-    createInitialState(),
+    initialState,
     composeEnhancers(
       applyMiddleware(sagaMiddleware))
   )
-  sagaMiddleware.run(calcRateSaga)
-  sagaMiddleware.run(calculatePeriodsSaga)
+
+  store.sagaTask = sagaMiddleware.run(rootSaga)
   return store
 }
 
