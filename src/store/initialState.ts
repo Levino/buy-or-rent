@@ -51,8 +51,10 @@ const createDefaultForm = () => ({
     }
 })
 
-export const createInitialState = () => ({
+const createInitialState = () => ({
   periods: createDefaultPeriods(),
   equivalentRate: createDefaultRate(),
   form: createDefaultForm()
 })
+
+export default createInitialState
