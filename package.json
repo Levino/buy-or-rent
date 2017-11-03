@@ -21,7 +21,7 @@
   },
   "scripts": {
     "dev": "concurrently \"tsc --watch\" next",
-    "build": "next build",
+    "build": "tsc && next build",
     "start": "next start",
     "test": "jest",
     "eject": "react-scripts-ts eject",

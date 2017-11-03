@@ -7,11 +7,12 @@ import Head from 'next/head'
 const App = () =>
       <Container fluid={true}>
         <Head>
-          <meta charSet='utf-8' />
+          <meta charSet="utf-8" />
           <link
             rel="stylesheet"
             href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
-            integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous"/>
+            integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+          />
         </Head>
         <Row>
           <Col>
