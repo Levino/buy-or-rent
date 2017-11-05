@@ -223,7 +223,7 @@ const taxUntilPeriod = memoize(((data: theData,
       capGainsTax
     }
   } = data
-  for (i = 1; i <= period; ++i) {
+  for (i = 0; i <= period; ++i) {
     const gainInPeriod = stockValueInPeriod(data, i) * stockIncreasePerPeriod
     result += gainInPeriod * capGainsTax
   }
