@@ -28,7 +28,7 @@
     "build": "tsc && next build",
     "start": "next start",
     "test": "jest",
-    "deploy": "now"
+    "deploy": "now && now alias"
   },
   "devDependencies": {
     "@types/jest": "^21.1.5",
