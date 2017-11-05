@@ -67,62 +67,64 @@ export const loanPaymentPerPeriod = (data: theData, period: number) => {
   return loanPayment
 }
 
-const loanPaymentUntil = (data: theData, period: number) => {
+const loanPaymentUntil = memoize((data: theData, period: number) => {
   const {
     assetData: {
       equity,
       investmentReserve
     }
   } = data
-  if (period === 0) {
-    return 0
+  let result = 0
+  let i
+  for (i = 1; i <= period; ++i) {
+    result += loanPaymentPerPeriod(data, i) + equity * investmentReserve
   }
-  return loanPaymentUntil(data, period - 1) + loanPaymentPerPeriod(data, period) + equity * investmentReserve
-}
+  return result
+})
 
-export const buyerPaymentsBetween = (data: theData, fromPeriod: number, toPeriod: number) => {
+export const buyerPaymentsBetween = memoize((data: theData, fromPeriod: number, toPeriod: number) => {
   return loanPaymentUntil(data, toPeriod) - loanPaymentUntil(data, fromPeriod)
-}
+})
 
-const amountAtEndOfPeriod = memoize((amountAtBeginning: number, interestRate: number, paymentPerPeriod: number): number => amountAtBeginning * (1 + interestRate) + paymentPerPeriod)
-
-const uncachedRestOfLoan = (data: theData,
-                            period: number): number => {
+export const restOfLoan = memoize((data: theData,
+                                   period: number): number => {
   const {
     loanAmount,
     interestRate,
     periods
   } = data.loanData
-  if (period >= periods) {
-    return 0
+  let result = loanAmount
+  let i
+  for (i = 1; i <= period; ++i) {
+    const paymentPerPeriod = PMT(interestRate, periods, loanAmount)
+    result += result * (interestRate) + paymentPerPeriod
+    if (i >= periods) {
+      break
+    }
   }
-  const paymentPerPeriod = PMT(interestRate, periods, loanAmount)
-  if (period === 0) {
-    return loanAmount
-  }
-  return amountAtEndOfPeriod(restOfLoan(data, period - 1), interestRate, paymentPerPeriod)
-}
-
-export const restOfLoan = memoize(uncachedRestOfLoan)
+  return result
+})
 
 export const assetValuation = memoize((data: theData, period: number): number => {
   const {
     equity,
     yieldPerPeriod
   } = data.assetData
-  if (period === 0) {
-    return equity
+  let result = equity
+  let i
+  for (i = 1; i <= period; ++i) {
+    result *= (1 + yieldPerPeriod)
   }
-  return assetValuation(data, period - 1) * (1 + yieldPerPeriod)
+  return result
 })
 
 const interestUntil = memoize((data: theData, period: number) => {
-  if (period === 0) {
-    return 0
+  let result = data.loanData.interestRate * data.loanData.loanAmount
+  let i
+  for (i = 1; i <= period; ++i) {
+    result += data.loanData.interestRate * restOfLoan(data, i - 1)
   }
-  const interestUntilLastPeriod = interestUntil(data, period - 1)
-  const interestThisPeriod = restOfLoan(data, period - 1) * data.loanData.interestRate
-  return interestThisPeriod + interestUntilLastPeriod
+  return result
 })
 
 export const interestBetween = memoize((data: theData, fromPeriod: number, toPeriod: number): number => {
@@ -133,12 +135,24 @@ export const netWorth = memoize((data: theData, period: number): number => {
   return assetValuation(data, period) - restOfLoan(data, period)
 })
 
-const rentUntilPeriod = memoize((data: theData, period) => {
-  const rentPriceAtBeginning = data.rentData.rentPricePerSM * data.rentData.size
-  if (period === -1) {
-    return 0
+const rentInPeriod = (data: theData, period: number): number => {
+  const {
+    rentData: {
+      rentPricePerSM,
+      rentIncreasePerPeriod,
+      size
+    }
+  } = data
+  return rentPricePerSM * size * Math.pow(1 + rentIncreasePerPeriod, period)
+}
+
+const rentUntilPeriod = memoize((data: theData, period): number => {
+  let result = 0
+  let i
+  for (i = 0; i <= period; ++i) {
+    result += rentInPeriod(data, i)
   }
-  return rentUntilPeriod(data, period - 1) + (rentPriceAtBeginning * Math.pow(1 + data.rentData.rentIncreasePerPeriod, period))
+  return result
 })
 
 export const rentBetweenPeriods = memoize((data: theData, fromPeriod: number, toPeriod: number) => {
@@ -146,12 +160,19 @@ export const rentBetweenPeriods = memoize((data: theData, fromPeriod: number, to
 })
 
 const savingsUntilPeriod = memoize((data: theData, period: number): number => {
-  if (period === 0) {
-    return 0
+  const {
+    assetData:
+      {
+        equity,
+        investmentReserve
+      }
+  } = data
+  let result = 0
+  let i
+  for (i = 1; i <= period; ++i) {
+    result += loanPaymentPerPeriod(data, i) + equity * investmentReserve - rentBetweenPeriods(data, i - 2, i - 1)
   }
-  const savingsUntilLastPeriod = savingsUntilPeriod(data, period - 1)
-  const savingsThisPeriod = buyerPaymentsBetween(data, period -1, period) - rentBetweenPeriods(data, period - 2, period - 1)
-  return savingsUntilLastPeriod + savingsThisPeriod
+  return result
 })
 
 export const savingsBetweenPeriods = memoize(
@@ -165,15 +186,22 @@ export const savingsBetweenPeriods = memoize(
 export const stockValueInPeriod = memoize(
   (data: theData,
    period: number): number => {
-    if (period < 0) {
-      throw new Error('period cannot be negative!')
+    const {
+      stockData: {
+        equity,
+        stockIncreasePerPeriod
+      },
+      taxData: {
+        capGainsTax
+      }
+    } = data
+    let result = equity
+    let i
+    for (i = 1; i <= period; ++i) {
+      const gainBeforeTax = result * stockIncreasePerPeriod
+      result += gainBeforeTax * (1 - capGainsTax) + savingsBetweenPeriods(data, i - 1, i)
     }
-    if (period === 0) {
-      return data.stockData.equity
-    }
-    return stockValueInPeriod(data, period - 1)
-      * (1 + (data.stockData.stockIncreasePerPeriod * (1 - data.taxData.capGainsTax)))
-      + savingsBetweenPeriods(data, period - 1, period)
+    return result
   })
 
 export const stockGainBetweenPeriods = memoize((data: theData,
@@ -185,11 +213,21 @@ export const stockGainBetweenPeriods = memoize((data: theData,
 
 const taxUntilPeriod = memoize(((data: theData,
                                  period: number) => {
-  if (period === 0) {
-    return 0
+  let result = 0
+  let i
+  const {
+    stockData: {
+      stockIncreasePerPeriod
+    },
+    taxData: {
+      capGainsTax
+    }
+  } = data
+  for (i = 1; i <= period; ++i) {
+    const gainInPeriod = stockValueInPeriod(data, i) * stockIncreasePerPeriod
+    result += gainInPeriod * capGainsTax
   }
-  const taxForThisPeriod = stockGainBetweenPeriods(data, period, period + 1) * ( 1 / (1 - data.taxData.capGainsTax) - 1)
-  return taxUntilPeriod(data, period - 1) + taxForThisPeriod
+  return result
 }))
 
 export const taxBetweenPeriods = memoize((data: theData,
