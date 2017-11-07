@@ -106,7 +106,7 @@ export const getTotalPeriods = state => state.app.periods.totalPeriods
 
 const getEquity = state => getSubState(state).equity
 
-export const YearsToDeath = connect(state => ({value: getTheData(state).loanData.totalPeriods}))(RenderNumber)
+export const YearsToDeath = connect(state => ({value: getTheData(state).loanData.totalPeriods / 12}))(RenderNumber)
 
 export const Equity = createMoneyComponent(getEquity)
 
