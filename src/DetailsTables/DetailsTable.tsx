@@ -34,10 +34,10 @@ const HeadRowYear = () => (
 
 const HeadRowMonth = () => (
   <tr>
-    <th>Jahr</th>
+    <th>Monat</th>
     {/* Käufer */}
     <th style={{textAlign: 'right'}}>Schulden Monatsbeginn</th>
-    <th style={{textAlign: 'right'}}>Belastung pro Monat</th>
+    <th style={{textAlign: 'right'}}>Ausgaben</th>
     <th style={{textAlign: 'right'}}>Zinsen</th>
     <th style={{textAlign: 'right'}}>Schulden Monatsende</th>
     <th style={{textAlign: 'right'}}>Wert Immobilie Monatsende</th>
