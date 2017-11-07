@@ -73,7 +73,7 @@ const getMonthlyPaymentBuyer = state => getYearlyPaymentBuyer(state) / 12
 
 export const MonthlyPaymentBuyer = createMoneyComponent(getMonthlyPaymentBuyer)
 
-export const getTotalPeriods = state => state.periods.months.length
+export const getTotalPeriods = state => state.periods.totalPeriods
 
 const getEquity = state => getSubState(state).equity
 
@@ -192,4 +192,4 @@ type periodsObject = {
   years: [period]
 }
 
-export const getPeriods = (state): periodsObject => state.periods
+export const getPeriods = (state): periodsObject => state.periods.values

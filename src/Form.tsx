@@ -53,13 +53,17 @@ const yearParsing = {
   format: value => Math.round(value / 12)
 }
 
+const numberParsing = {
+  parse: value => Number(value)
+}
+
 const MainForm = ({handleSubmit, calculating}) => (
   <Form>
     <Row>
       <Col md={6}>
         <CustomFormGroup addon="%" label="Kreditzins" {...interestRateParsing} name="interestRate"/>
         <CustomFormGroup addon="%" label="Abgeltungssteuer" {...percentParsing} name="capGainsTax"/>
-        <CustomFormGroup addon="€" label="Eigenkapital" step="10000" name="equity"/>
+        <CustomFormGroup addon="€" label="Eigenkapital" {...numberParsing} step="10000" name="equity"/>
         <CustomFormGroup addon="€ pro m²" label="Kaltmiete" step="0.5" name="rentPricePerSM"/>
         <CustomFormGroup addon="€ pro m²" label="Kaufpreis" step="100" name="buyPricePerSM"/>
         <CustomFormGroup addon="m²" label="Größe" name="size"/>

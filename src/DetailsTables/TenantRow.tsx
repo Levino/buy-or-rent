@@ -33,15 +33,20 @@ class TenantRow extends Component<TenantRowInterface> {
 
 export type TenantRowOwnProps = {
     period: number,
-    years: boolean
+    periodGap: number
 }
 
-const mapStateToProps = (state, {years, period}: TenantRowOwnProps): TenantRowInterface => {
-  let timeframe = 'months'
-  if (years) {
-    timeframe = 'years'
+const mapStateToProps = (state, {periodGap, period}: TenantRowOwnProps): TenantRowInterface => {
+  const periods = getPeriods(state)
+  const lastPeriod = periods[period]
+  const nextPeriod = periods[period + periodGap]
+  return {
+    rent: nextPeriod.tenantData.totalRent - lastPeriod.tenantData.totalRent,
+    savings: nextPeriod.tenantData.totalSavings - lastPeriod.tenantData.totalSavings,
+    stockValue: nextPeriod.tenantData.stockValue,
+    stockGain: nextPeriod.tenantData.totalStockValueIncrease - lastPeriod.tenantData.totalStockValueIncrease,
+    tax: nextPeriod.tenantData.totalTax - lastPeriod.tenantData.totalTax
   }
-  return getPeriods(state)[timeframe][period].tenantData
 }
 
 export default connect(mapStateToProps)(TenantRow)

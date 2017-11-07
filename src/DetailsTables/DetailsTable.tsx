@@ -2,7 +2,6 @@ import * as React from 'react'
 import { Table } from 'reactstrap'
 import { getTotalPeriods } from '../selectors'
 import { connect } from 'react-redux'
-import { times } from 'lodash'
 
 import TenantRow from './TenantRow'
 import BuyerRow from './BuyerRow'
@@ -12,7 +11,7 @@ interface DetailsTableProps {
   format?: 'years' | 'months'
 }
 
-const periodToYear = period => Math.round(period + 2018)
+const periodToYear = period => Math.round(period / 12 + 2018)
 
 const HeadRowYear = () => (
   <tr>
@@ -54,12 +53,27 @@ const HeadRowMonth = () => (
 
 const DetailsTable = ({periods, format = 'years'}: DetailsTableProps) => {
   // If format is years then we only want to render every 12th period
-  let periodsArray = times(periods)
+  let periodGap = 1
   if (format === 'years') {
-    periodsArray = times(periods / 12)
-  } else {
-    periodsArray = times(10)
+    periodGap = 12
   }
+
+  const Rows = (): any => {
+    let period
+    let result = []
+    for (period = 0; period < periods; period += periodGap) {
+      result.push(
+        <tr key={period}>
+          <td>{(format === 'years') ? periodToYear(period) : period + 1}</td>
+          {/* Käufer */}
+          <BuyerRow period={period} periodGap={periodGap}/>
+          <TenantRow period={period} periodGap={periodGap}/>
+        </tr>
+      )
+    }
+    return result
+  }
+
   return <Table size="sm" bordered={true} responsive={true}>
     <thead>
     <tr>
@@ -70,16 +84,7 @@ const DetailsTable = ({periods, format = 'years'}: DetailsTableProps) => {
     { format === 'years' ? <HeadRowYear/> : <HeadRowMonth/>}
     </thead>
     <tbody>
-    {
-      periodsArray.map((period, index) => (
-        <tr key={period}>
-          <td>{(format === 'years') ? periodToYear(period) : period + 1}</td>
-          {/* Käufer */}
-          <BuyerRow period={period} years={format === 'years'}/>
-          <TenantRow period={period} years={format === 'years'}/>
-        </tr>
-      ))
-    }
+      <Rows/>
     </tbody>
   </Table>
 }

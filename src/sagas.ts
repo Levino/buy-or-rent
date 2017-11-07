@@ -1,12 +1,7 @@
 import { call, put, select, takeLatest } from 'redux-saga/effects'
-import { times } from 'lodash'
 import { getTheData } from './selectors'
 import {
-  assetValuation, buyerPaymentsBetween, calculateEquivalentYield, interestBetween, netWorth,
-  rentBetweenPeriods,
-  restOfLoan,
-  savingsBetweenPeriods, stockGainBetweenPeriods, stockValueInPeriod, taxBetweenPeriods,
-  theData
+  calculateAllValues, calculateEquivalentYield, theData
 } from './helpers'
 
 const EQUIVALENT_RATE_CALCULATION_SUCCEEDED = 'EQUIVALENT_RATE_CALCULATION_SUCCEEDED'
@@ -61,32 +56,10 @@ export const actions = {
   }
 }
 
-export const createPeriodsObject = (data: theData) => {
-  const createPeriods = (periods, periodGap: number) => (
-    times(periods).map(aPeriod => aPeriod * periodGap).map(period => ({
-      buyerData: {
-        loanAmountAtBeginning: restOfLoan(data, period),
-        loanPayment: buyerPaymentsBetween(data, period, period + periodGap),
-        interest: interestBetween(data, period, period + periodGap),
-        loanAmountAtEnd: restOfLoan(data, period + periodGap),
-        houseValue: assetValuation(data, period + periodGap),
-        netWorth: netWorth(data, period + periodGap)
-      },
-      tenantData: {
-        rent: rentBetweenPeriods(data, period - 1, period - 1 + periodGap),
-        savings: savingsBetweenPeriods(data, period, period + periodGap),
-        stockValue: stockValueInPeriod(data, period + periodGap),
-        stockGain: stockGainBetweenPeriods(data, period, period + periodGap),
-        tax: taxBetweenPeriods(data, period, period + periodGap)
-      }
-    }))
-  )
-  return {
-    years: createPeriods(data.loanData.totalPeriods / 12, 12),
-    months: createPeriods(data.loanData.totalPeriods, 1),
-    totalTax: taxBetweenPeriods(data, 0, data.loanData.totalPeriods)
-  }
-}
+export const createPeriodsObject = (data: theData) => ({
+  values: calculateAllValues(data),
+  totalPeriods: data.loanData.totalPeriods
+})
 
 // worker Saga: will be fired on USER_FETCH_REQUESTED actions
 function* calculatePeriodsGenerator():any {

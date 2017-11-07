@@ -8,50 +8,57 @@ import { TenantRowOwnProps } from './TenantRow'
 export interface BuyerRowInterface {
   period: number
   loanPayment: number
-  loanAmountAtEnd: number
-  loanAmountAtBeginning: number
+  loanAtEnd: number
+  loanAtBeginning: number
   interest: number
-  houseValue: number
-  netWorth: number
+  propertyValue: number
+  networth: number
 }
 
 class BuyerRow extends Component<BuyerRowInterface> {
   render() {
     const {
       loanPayment,
-      loanAmountAtBeginning,
-      loanAmountAtEnd,
+      loanAtBeginning,
+      loanAtEnd,
       interest,
-      houseValue,
-      netWorth
+      propertyValue,
+      networth
     } = this.props
     return [
-      <td key="loanAmount" style={{textAlign: 'right'}}><MoneyString value={loanAmountAtBeginning}/></td>,
+      <td key="loan" style={{textAlign: 'right'}}><MoneyString value={loanAtBeginning}/></td>,
       <td key="loanPayment" style={{textAlign: 'right'}}><MoneyString value={loanPayment}/></td>,
       <td key="interest" style={{textAlign: 'right'}}>
         <MoneyString
           value={interest}
         />
       </td>,
-      <td key="loanNextPeriod" style={{textAlign: 'right'}}><MoneyString value={loanAmountAtEnd}/></td>,
+      <td key="loanNextPeriod" style={{textAlign: 'right'}}><MoneyString value={loanAtEnd}/></td>,
       <td
         key="assetValuation"
         style={{textAlign: 'right'}}
       >
-        <MoneyString value={houseValue}/>
+        <MoneyString value={propertyValue}/>
       </td>,
-      <td key="netWorth" style={{textAlign: 'right'}}><MoneyString value={netWorth}/>
+      <td key="networth" style={{textAlign: 'right'}}><MoneyString value={networth}/>
       </td>
     ]
   }
 }
 
-const mapStateToProps = (state, {period, years}: TenantRowOwnProps ): BuyerRowInterface => {
-  let timeframe = 'months'
-  if (years) {
-    timeframe = 'years'
+const mapStateToProps = (state, {period, periodGap}: TenantRowOwnProps ): BuyerRowInterface => {
+  const periods = getPeriods(state)
+  const lastPeriod = periods[period]
+  const nextPeriod = periods[period + periodGap]
+  return {
+    period,
+    loanPayment: nextPeriod.buyerData.totalPayments - lastPeriod.buyerData.totalPayments,
+    loanAtBeginning: lastPeriod.buyerData.loanAmount,
+    loanAtEnd: nextPeriod.buyerData.loanAmount,
+    interest: nextPeriod.buyerData.totalInterest - lastPeriod.buyerData.totalInterest,
+    propertyValue: nextPeriod.buyerData.propertyValue,
+    networth: nextPeriod.buyerData.networth
   }
-  return getPeriods(state)[timeframe][period].buyerData
 }
 
 export default connect(mapStateToProps)(BuyerRow)
