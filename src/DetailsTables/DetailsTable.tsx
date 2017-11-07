@@ -56,6 +56,8 @@ const DetailsTable = ({periods, format = 'years'}: DetailsTableProps) => {
   let periodGap = 1
   if (format === 'years') {
     periodGap = 12
+  } else {
+    periods = 24
   }
 
   const Rows = (): any => {
