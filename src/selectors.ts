@@ -8,6 +8,7 @@ import { MoneyString } from './helperComponents'
 import { getEquivalentRate } from './reducers'
 import { TenantRowInterface } from './DetailsTables/TenantRow'
 import { BuyerRowInterface } from './DetailsTables/BuyerRow'
+import { Component } from 'react'
 
 const getSubState = state => state.app.data
 
@@ -25,8 +26,12 @@ export const getMonthlyLoanPayment = (state, period: number) => {
 }
 
 export const LoanAmount = createMoneyComponent(state => getTheData(state).loanData.loanAmount)
-
-export const LoanYears = connect(state => ({years: getTheData(state).loanData.periods / 12}))(({years}) => years)
+class RenderNumber extends Component<{value: number}> {
+  render() {
+    return `${this.props.value}`
+  }
+}
+export const LoanYears = connect(state => ({value: getTheData(state).loanData.periods / 12}))(RenderNumber)
 
 export const MonthlyLoanPayment = createMoneyComponent(getLoanPaymentInFirstPeriod)
 
@@ -43,7 +48,19 @@ export const getAnnualInvestmentPayment = state => {
 
 export const AnnualInvestmentPayment = createMoneyComponent(getAnnualInvestmentPayment)
 
-export const PropertyValueIncreasePerYear = connect(state => ({value: getTheData(state).assetData.yieldPerPeriod * 12}))(({value}) => `${value * 100} %`)
+class RenderPercent extends Component<{value: number}> {
+  render() {
+    return `${this.props.value * 100} %`
+  }
+}
+
+class RenderSize extends Component<{value: number}> {
+  render() {
+    return `${this.props.value} m²`
+  }
+}
+
+export const PropertyValueIncreasePerYear = connect(state => ({value: getTheData(state).assetData.yieldPerPeriod * 12}))(RenderPercent)
 
 const getMonthlyInvestmentPayment = state => getAnnualInvestmentPayment(state) / 12
 
@@ -82,14 +99,14 @@ const getMonthlyPaymentBuyer = state => getYearlyPaymentBuyer(state) / 12
 export const MonthlyPaymentBuyer = createMoneyComponent(getMonthlyPaymentBuyer)
 
 export const PropertySize = connect(state => ({
-  size: getTheData(state).rentData.size
-}))(({size}) => `${size} m²`)
+  value: getTheData(state).rentData.size
+}))(RenderSize)
 
 export const getTotalPeriods = state => state.app.periods.totalPeriods
 
 const getEquity = state => getSubState(state).equity
 
-export const YearsToDeath = connect(state => ({value: getTheData(state).loanData.totalPeriods}))(({value}) => `${value / 12}`)
+export const YearsToDeath = connect(state => ({value: getTheData(state).loanData.totalPeriods}))(RenderNumber)
 
 export const Equity = createMoneyComponent(getEquity)
 

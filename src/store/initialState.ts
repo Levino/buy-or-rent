@@ -9,8 +9,6 @@ const createDefaultRate = () => ({
   status: 'done'
 })
 
-const valuesToData = (state): theData => getTheData(state)
-
 const defaultValues = {
   interestRate: 0.02 / 12,
   capGainsTax: 0.25,
