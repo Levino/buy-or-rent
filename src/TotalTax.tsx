@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 const TotalTax = ({value}) => <MoneyString value={value}/>
 
 const mapStateToProps = state => ({
-  value: state.periods.values[state.periods.totalPeriods].tenantData.totalTax
+  value: state.app.periods.values[state.app.periods.totalPeriods].tenantData.totalTax
 })
 
 export default connect(mapStateToProps)(TotalTax)

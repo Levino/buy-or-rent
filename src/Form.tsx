@@ -3,7 +3,7 @@ import { Field, reduxForm } from 'redux-form'
 import { Row, Col, Form, FormGroup, Label, InputGroup, InputGroupAddon, Button } from 'reactstrap'
 import { actions } from './sagas'
 import { connect } from 'react-redux'
-
+import { actions as syncActions } from './reducers'
 interface ICustomFormGroup {
   addon?: {}
   name: string
@@ -101,7 +101,7 @@ const MainForm = ({handleSubmit, calculating}) => (
 const mapStateToProps = (state, ownProps) => {
   return {
     ...ownProps,
-    calculating: state.periods.calculating || (state.equivalentRate.status === 'calculating')
+    calculating: state.app.periods.calculating || (state.app.equivalentRate.status === 'calculating')
   }
 }
 
@@ -111,5 +111,8 @@ const Wrapper = connect(
 
 export default reduxForm({
   form: 'mainForm',
-  onSubmit: (values, dispatch) => dispatch(actions.calculateEquivYield())
+  onSubmit: (values, dispatch) => {
+    dispatch(syncActions.saveFormData(values))
+    dispatch(actions.calculateEquivYield())
+  }
 })(Wrapper)

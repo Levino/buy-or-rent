@@ -1,6 +1,6 @@
 import nextReduxSaga from 'next-redux-saga'
 import withRedux from 'next-redux-wrapper'
-import { equivalentRate, periods } from '../reducers'
+import app from '../reducers'
 import { createStore, compose, combineReducers, applyMiddleware } from 'redux'
 import { reducer as formReducer } from 'redux-form'
 import createSagaMiddleware from 'redux-saga'
@@ -14,8 +14,7 @@ const rootReducer = combineReducers({
   // ...your other reducers here
   // you have to pass formReducer under 'form' key,
   // for custom keys look up the docs for 'getFormState'
-  equivalentRate,
-  periods,
+  app,
   form: formReducer
 })
 

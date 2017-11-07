@@ -9,7 +9,7 @@ import { getEquivalentRate } from './reducers'
 import { TenantRowInterface } from './DetailsTables/TenantRow'
 import { BuyerRowInterface } from './DetailsTables/BuyerRow'
 
-const getSubState = state => state.form.mainForm.values
+const getSubState = state => state.app.data
 
 const createMoneyComponent = selector => connect(state => (
   {value: selector(state)}
@@ -23,6 +23,10 @@ export const getMonthlyLoanPayment = (state, period: number) => {
   const data = getTheData(state)
   return loanPaymentPerPeriod(data, period)
 }
+
+export const LoanAmount = createMoneyComponent(state => getTheData(state).loanData.loanAmount)
+
+export const LoanYears = connect(state => ({years: getTheData(state).loanData.periods / 12}))(({years}) => years)
 
 export const MonthlyLoanPayment = createMoneyComponent(getLoanPaymentInFirstPeriod)
 
@@ -38,6 +42,8 @@ export const getAnnualInvestmentPayment = state => {
 }
 
 export const AnnualInvestmentPayment = createMoneyComponent(getAnnualInvestmentPayment)
+
+export const PropertyValueIncreasePerYear = connect(state => ({value: getTheData(state).assetData.yieldPerPeriod * 12}))(({value}) => `${value * 100} %`)
 
 const getMonthlyInvestmentPayment = state => getAnnualInvestmentPayment(state) / 12
 
@@ -60,6 +66,8 @@ export const grossPrice = (state) => {
   return getNetPrice(state) + notaryFee + propertyPurchaseTax + brokerFee
 }
 
+export const PropertyEndValue = createMoneyComponent(state => state.app.periods.values[state.app.periods.totalPeriods].buyerData.propertyValue)
+
 export const GrossPrice = createMoneyComponent(grossPrice)
 
 export const getYearlyPaymentBuyer = state => [
@@ -73,9 +81,15 @@ const getMonthlyPaymentBuyer = state => getYearlyPaymentBuyer(state) / 12
 
 export const MonthlyPaymentBuyer = createMoneyComponent(getMonthlyPaymentBuyer)
 
-export const getTotalPeriods = state => state.periods.totalPeriods
+export const PropertySize = connect(state => ({
+  size: getTheData(state).rentData.size
+}))(({size}) => `${size} m²`)
+
+export const getTotalPeriods = state => state.app.periods.totalPeriods
 
 const getEquity = state => getSubState(state).equity
+
+export const YearsToDeath = connect(state => ({value: getTheData(state).loanData.totalPeriods}))(({value}) => `${value / 12}`)
 
 export const Equity = createMoneyComponent(getEquity)
 
@@ -192,4 +206,4 @@ type periodsObject = {
   years: [period]
 }
 
-export const getPeriods = (state): periodsObject => state.periods.values
+export const getPeriods = (state): periodsObject => state.app.periods.values

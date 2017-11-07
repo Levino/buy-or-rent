@@ -1,4 +1,5 @@
 import { types } from './sagas'
+import { combineReducers } from 'redux'
 
 const {
   EQUIVALENT_RATE_CALCULATION_SUCCEEDED,
@@ -39,5 +40,29 @@ export const periods = (state = {calculating: false}, action) => {
   return state
 }
 
-export const getEquivalentRate = state => state.equivalentRate.rate
-export const getEquivalentRateStatus = state => state.equivalentRate.status
+const SAVE_FORM_DATA = 'SAVE_FORM_DATA'
+
+export const data = (state = {}, action) => {
+  if (action.type === SAVE_FORM_DATA) {
+    return action.values
+  }
+  return state
+}
+
+export const actions = {
+  saveFormData(values: any) {
+    return {
+      type: SAVE_FORM_DATA,
+      values
+    }
+  }
+}
+
+export const getEquivalentRate = state => state.app.equivalentRate.rate
+export const getEquivalentRateStatus = state => state.app.equivalentRate.status
+
+export default combineReducers({
+  periods,
+  data,
+  equivalentRate
+})
