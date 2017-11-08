@@ -25,8 +25,9 @@ export const types = {
 }
 
 // worker Saga: will be fired on USER_FETCH_REQUESTED actions
-function* calculateEquivalentRateGenerator(values: any): any {
+function* calculateEquivalentRateGenerator({values}:any): any {
   const data = dataFromFormValues(values)
+  console.log(values)
   try {
     const stockIncreasePerPeriod = yield call(calculateEquivalentYield, data)
     yield put({type: EQUIVALENT_RATE_CALCULATION_SUCCEEDED})
@@ -43,17 +44,6 @@ function* calculateEquivalentRateGenerator(values: any): any {
   }
 }
 
-/*
-  Alternatively you may use takeLatest.
-
-  Does not allow concurrent fetches of user. If 'EQUIVALENT_RATE_CALCULATION_REQUESTED' gets
-  dispatched while a fetch is already pending, that pending fetch is cancelled
-  and only the latest one will be run.
-*/
-export function* calcRateSaga(): any {
-  yield takeLatest(EQUIVALENT_RATE_CALCULATION_REQUESTED, calculateEquivalentRateGenerator)
-}
-
 export const actions = {
   calculateEquivYield(values: any) {
     return {
@@ -64,7 +54,7 @@ export const actions = {
 }
 
 export const createResultObject = (data: theData) => ({
-  values: calculatePeriods(data),
+  periods: calculatePeriods(data),
   data
 })
 

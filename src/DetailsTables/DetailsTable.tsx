@@ -52,7 +52,6 @@ const HeadRowMonth = () => (
 )
 
 const DetailsTable = ({periods, format = 'years'}: DetailsTableProps) => {
-  console.log(periods)
   // If format is years then we only want to render every 12th period
   let periodGap = 1
   if (format === 'years') {

@@ -101,6 +101,7 @@ export const calculateEquivalentYield = memoize(async (data: theData) => {
       const netWorthBuyer = periods[data.totalPeriods].buyerData.networth
       const netWorthTenant = periods[data.totalPeriods].tenantData.stockValue
       error = netWorthTenant - netWorthBuyer
+      console.log(error)
       if (error > 0) {
         upperLimit = approximationValue
       } else {
@@ -123,11 +124,12 @@ export const calculateEquivalentYield = memoize(async (data: theData) => {
 const investmentPayment = (data: theData) => {
   const {
     buyerData: {
-      equity,
+      buyPricePerSM,
+      size,
       investmentReserve
     }
   } = data
-  return equity * investmentReserve
+  return (buyPricePerSM * size) * investmentReserve
 }
 
 export type Period = {
@@ -165,18 +167,19 @@ export const calculatePeriods = (data: theData): PeriodsArray => {
       interestRate
     },
     buyerData: {
-      equity: propertyEquity,
+      buyPricePerSM,
+      size,
       yieldPerPeriod
     },
     rentData: {
       rentPricePerSM,
-      size,
       rentIncreasePerPeriod
     },
     totalPeriods
   } = data
   let result = {}
   let stockValue = equity
+  let initialPropertyValue = size * buyPricePerSM
   let totalLoanAmount = loanAmount(data)
   let i
   let totalRent = 0
@@ -188,7 +191,7 @@ export const calculatePeriods = (data: theData): PeriodsArray => {
   for (i = 0; i <= totalPeriods; ++i) {
     /* Values at the beginning of the period */
     // Value of property at beginning of period
-    const propertyValue = propertyEquity * Math.pow(1 + yieldPerPeriod, i)
+    const propertyValue = initialPropertyValue * Math.pow(1 + yieldPerPeriod, i)
 
     // Networth at beginning of period
     const networth = propertyValue - totalLoanAmount

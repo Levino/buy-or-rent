@@ -161,14 +161,14 @@ export const dataFromFormValues = ({
                                      timeToDeath,
                                      equityPriceIncrease,
                                      rentIncreasePerPeriod
-                           }: formValues): theData => {
+                           }: formValues, equivalentRate?: number): theData => {
   return {
     taxData: {
       capGainsTax
     },
     stockData: {
       equity,
-      stockIncreasePerPeriod: 0
+      stockIncreasePerPeriod: equivalentRate || 0
     },
     rentData: {
       rentPricePerSM,

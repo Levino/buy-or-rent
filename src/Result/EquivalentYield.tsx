@@ -32,7 +32,7 @@ class EquivalentYield extends Component<EquivalentYieldInterface> {
 
 const mapStateToProps = (state) => {
   return {
-    equivalentYield: 12 * getResult(state).data.stockData.stockIncreasePerPeriod * 12,
+    equivalentYield: 12 * getResult(state).data.stockData.stockIncreasePerPeriod,
     calculating: getCalculating(state)
   }
 }
