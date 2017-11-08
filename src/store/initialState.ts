@@ -1,15 +1,24 @@
-import { theData } from '../helpers'
-import { getTheData } from '../selectors'
-import { createPeriodsObject } from '../sagas'
 import memoize from 'memoizee'
-const createDefaultPeriods = (data: theData) => createPeriodsObject(data)
+import { dataFromFormValues } from '../selectors'
+import { calculatePeriods } from '../helpers'
 
-const createDefaultRate = () => ({
-  rate: 0.006200313537556212,
-  status: 'done'
-})
-
-const defaultValues = {
+export type formValues = {
+  interestRate: number
+  capGainsTax: number
+  equity: number
+  rentPricePerSM: number
+  buyPricePerSM: number
+  periods: number
+  investmentReserve: number
+  size: number
+  brokerFee: number
+  notaryFee: number
+  propertyPurchaseTax: number
+  timeToDeath: number
+  equityPriceIncrease: number
+  rentIncreasePerPeriod: number
+}
+const defaultValues: formValues = {
   interestRate: 0.02 / 12,
   capGainsTax: 0.25,
   equity: 200000,
@@ -32,16 +41,13 @@ const createDefaultForm = () => ({
 })
 
 const createInitialState = memoize (() => {
-  const state = {
-    equivalentRate: createDefaultRate(),
-    data: defaultValues
-  }
   return {
-    app: {
-      ...state,
-      periods: createDefaultPeriods(getTheData({app: state}))
-    },
-    form: createDefaultForm()
+    form: createDefaultForm(),
+    calculating: false,
+    result: {
+      data: dataFromFormValues(defaultValues),
+      periods: calculatePeriods(dataFromFormValues(defaultValues))
+    }
   }
 })
 

@@ -1,16 +1,14 @@
 import memoize from 'memoizee'
 
-export type loanDataType = {
-  periods: number
-  loanAmount: number
-  interestRate: number,
-  totalPeriods: number
-}
-
-export type AssetData = {
-  equity: number
+export type BuyerData = {
+  buyPricePerSM: number
+  size: number
+  brokerFee: number
+  notaryFee: number
+  propertyPurchaseTax: number
   yieldPerPeriod: number
   investmentReserve: number
+  equity: number
 }
 
 export type StockData = {
@@ -28,12 +26,30 @@ export type RentData = {
   rentIncreasePerPeriod: number
 }
 
+export type LoanData = {
+  periods: number
+  interestRate: number
+}
+
 export type theData = {
   stockData: StockData
   rentData: RentData,
-  loanData: loanDataType,
+  buyerData: BuyerData,
   taxData: TaxData,
-  assetData: AssetData
+  loanData: LoanData,
+  totalPeriods?: number
+}
+
+export const loanAmount = (data: theData): number => {
+  const { buyerData: {
+    size,
+    brokerFee,
+    notaryFee,
+    propertyPurchaseTax,
+    equity,
+    buyPricePerSM
+  } } = data
+  return size * buyPricePerSM * ( 1 + brokerFee + notaryFee + propertyPurchaseTax) - equity
 }
 
 export const PMT = memoize((rate, nper, pv, fv = 0, type = 0) => {
@@ -54,13 +70,12 @@ export const loanPaymentPerPeriod = (data: theData, period: number) => {
   const {
     loanData: {
       periods,
-      interestRate,
-      loanAmount
+      interestRate
     }
   } = data
   let loanPayment
   if (period < periods) {
-    loanPayment = -1 * PMT(interestRate, periods, loanAmount)
+    loanPayment = -1 * PMT(interestRate, periods, loanAmount(data))
   } else {
     loanPayment = 0
   }
@@ -76,15 +91,15 @@ export const calculateEquivalentYield = memoize(async (data: theData) => {
   const iteration = async () => {
     return new Promise((resolve, reject) => {
       approximationValue = (upperLimit + lowerLimit) / 2
-      const periods = calculateAllValues({
+      const periods = calculatePeriods({
         ...data,
         stockData: {
           ...data.stockData,
           stockIncreasePerPeriod: approximationValue
         }
       })
-      const netWorthBuyer = periods[data.loanData.totalPeriods].buyerData.networth
-      const netWorthTenant = periods[data.loanData.totalPeriods].tenantData.stockValue
+      const netWorthBuyer = periods[data.totalPeriods].buyerData.networth
+      const netWorthTenant = periods[data.totalPeriods].tenantData.stockValue
       error = netWorthTenant - netWorthBuyer
       if (error > 0) {
         upperLimit = approximationValue
@@ -107,7 +122,7 @@ export const calculateEquivalentYield = memoize(async (data: theData) => {
 
 const investmentPayment = (data: theData) => {
   const {
-    assetData: {
+    buyerData: {
       equity,
       investmentReserve
     }
@@ -115,7 +130,28 @@ const investmentPayment = (data: theData) => {
   return equity * investmentReserve
 }
 
-export const calculateAllValues = (data: theData) => {
+export type Period = {
+  buyerData: {
+    loanAmount: number
+    totalPayments: number
+    totalInterest: number
+    propertyValue: number
+    networth: number
+  }
+  tenantData: {
+    totalRent: number
+    totalSavings: number
+    totalStockValueIncrease: number
+    totalTax: number
+    stockValue: number
+  }
+}
+
+export type PeriodsArray = {
+  [key: number]: Period
+}
+
+export const calculatePeriods = (data: theData): PeriodsArray => {
   const {
     stockData: {
       equity,
@@ -126,11 +162,9 @@ export const calculateAllValues = (data: theData) => {
     },
     loanData: {
       periods,
-      totalPeriods,
-      loanAmount,
       interestRate
     },
-    assetData: {
+    buyerData: {
       equity: propertyEquity,
       yieldPerPeriod
     },
@@ -138,11 +172,12 @@ export const calculateAllValues = (data: theData) => {
       rentPricePerSM,
       size,
       rentIncreasePerPeriod
-    }
+    },
+    totalPeriods
   } = data
   let result = {}
   let stockValue = equity
-  let totalLoanAmount = loanAmount
+  let totalLoanAmount = loanAmount(data)
   let i
   let totalRent = 0
   let totalSavings = 0

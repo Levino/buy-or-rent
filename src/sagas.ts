@@ -1,8 +1,12 @@
-import { call, put, select, takeLatest } from 'redux-saga/effects'
-import { getTheData } from './selectors'
+import { call, put, takeLatest } from 'redux-saga/effects'
+import { dataFromFormValues } from './selectors'
 import {
-  calculateAllValues, calculateEquivalentYield, theData
+  calculatePeriods, calculateEquivalentYield, theData
 } from './helpers'
+
+import { actions as resultActions } from './Result/redux'
+
+const { saveResult } = resultActions
 
 const EQUIVALENT_RATE_CALCULATION_SUCCEEDED = 'EQUIVALENT_RATE_CALCULATION_SUCCEEDED'
 const EQUIVALENT_RATE_CALCULATION_FAILED = 'EQUIVALENT_RATE_CALCULATION_FAILED'
@@ -21,12 +25,19 @@ export const types = {
 }
 
 // worker Saga: will be fired on USER_FETCH_REQUESTED actions
-function* calculateEquivalentRateGenerator(): any {
-  const data = yield select(getTheData)
+function* calculateEquivalentRateGenerator(values: any): any {
+  const data = dataFromFormValues(values)
   try {
-    const stockYield = yield call(calculateEquivalentYield, data)
-    yield put({type: EQUIVALENT_RATE_CALCULATION_SUCCEEDED, value: stockYield})
-    yield call(calculatePeriodsGenerator)
+    const stockIncreasePerPeriod = yield call(calculateEquivalentYield, data)
+    yield put({type: EQUIVALENT_RATE_CALCULATION_SUCCEEDED})
+    const result = yield call(createResultObject, {
+      ...data,
+      stockData: {
+        ...data.stockData,
+          stockIncreasePerPeriod
+      }
+    })
+    yield put(saveResult(result))
   } catch (e) {
     yield put({type: EQUIVALENT_RATE_CALCULATION_FAILED, message: e.message})
   }
@@ -44,38 +55,19 @@ export function* calcRateSaga(): any {
 }
 
 export const actions = {
-  calculateEquivYield() {
+  calculateEquivYield(values: any) {
     return {
-      type: EQUIVALENT_RATE_CALCULATION_REQUESTED
-    }
-  },
-  calculatePeriods() {
-    return {
-      type: CALCULATE_PERIODS_REQUESTED
+      type: EQUIVALENT_RATE_CALCULATION_REQUESTED,
+      values
     }
   }
 }
 
-export const createPeriodsObject = (data: theData) => ({
-  values: calculateAllValues(data),
-  totalPeriods: data.loanData.totalPeriods
+export const createResultObject = (data: theData) => ({
+  values: calculatePeriods(data),
+  data
 })
 
-// worker Saga: will be fired on USER_FETCH_REQUESTED actions
-function* calculatePeriodsGenerator():any {
-  const data = yield select(getTheData)
-  try {
-    const periodsObject = yield call(createPeriodsObject, data)
-    yield put({type: CALCULATE_PERIODS_SUCCEEDED, value: periodsObject})
-  } catch (e) {
-    yield put({type: CALCULATE_PERIODS_FAILED, message: e.message})
-  }
-}
-export function* calculatePeriodsSaga() {
-  yield takeLatest(CALCULATE_PERIODS_REQUESTED, calculatePeriodsGenerator)
-}
-
 export function* rootSaga () {
-  yield takeLatest(CALCULATE_PERIODS_REQUESTED, calculatePeriodsGenerator),
   yield takeLatest(EQUIVALENT_RATE_CALCULATION_REQUESTED, calculateEquivalentRateGenerator)
 }
