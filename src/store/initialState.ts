@@ -46,7 +46,7 @@ const createInitialState = memoize (() => {
     calculating: false,
     result: {
       data: dataFromFormValues(defaultValues, 0.006200313536586084),
-      periods: calculatePeriods(dataFromFormValues(defaultValues))
+      periods: calculatePeriods(dataFromFormValues(defaultValues, 0.006200313536586084))
     }
   }
 })

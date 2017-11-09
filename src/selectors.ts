@@ -9,7 +9,7 @@ import { Component } from 'react'
 import { selectors as resultSelectors } from './Result/redux'
 import { formValues } from './store/initialState'
 
-const { getResult } = resultSelectors
+const {getResult} = resultSelectors
 
 const createMoneyComponent = selector => connect(state => (
   {value: selector(state)}
@@ -51,7 +51,7 @@ export const AnnualInvestmentPayment = createMoneyComponent(getAnnualInvestmentP
 
 class RenderPercent extends Component<{ value: number }> {
   render() {
-    return `${this.props.value * 100} %`
+    return `${(this.props.value * 100).toFixed(2)} %`
   }
 }
 
@@ -61,10 +61,26 @@ class RenderSize extends Component<{ value: number }> {
   }
 }
 
+export const RentIncreasePerYear = connect(
+  state => ({value: getResult(state).data.rentData.rentIncreasePerPeriod * 12})
+)(RenderPercent)
+
 export const PropertyValueIncreasePerYear =
   connect(state => ({value: getResult(state).data.buyerData.yieldPerPeriod * 12}))(RenderPercent)
 
 const getMonthlyInvestmentPayment = state => getAnnualInvestmentPayment(state) / 12
+
+export const RentPerMonth = createMoneyComponent(state => {
+  const {
+    data: {
+      rentData: {
+        size,
+        rentPricePerSM
+      }
+    }
+  } = getResult(state)
+  return size * rentPricePerSM
+})
 
 export const MonthlyInvestmentPayment = createMoneyComponent(getMonthlyInvestmentPayment)
 
@@ -112,6 +128,9 @@ export const YearsToDeath = connect(state => ({value: getResult(state).data.tota
 
 export const Equity = createMoneyComponent(getEquity)
 
+export const EquivalentRate = connect(state => ({value: getResult(state).data.stockData.stockIncreasePerPeriod * 12}))
+(RenderPercent)
+
 export const getLoan = state => grossPrice(state) - getEquity(state)
 
 export const Loan = createMoneyComponent(getLoan)
@@ -144,6 +163,16 @@ const getAbsoluteNotaryFee = state => {
   return notaryFee * netPrice
 }
 
+export const StockEndValue = createMoneyComponent(state => {
+  const {
+    data: {
+      totalPeriods
+    },
+    periods
+  } = getResult(state)
+  return periods[totalPeriods].tenantData.stockValue
+})
+
 export const AbsoluteNotaryFee = createMoneyComponent(getAbsoluteNotaryFee)
 
 export const dataFromFormValues = ({
@@ -161,7 +190,7 @@ export const dataFromFormValues = ({
                                      timeToDeath,
                                      equityPriceIncrease,
                                      rentIncreasePerPeriod
-                           }: formValues, equivalentRate?: number): theData => {
+                                   }: formValues, equivalentRate?: number): theData => {
   return {
     taxData: {
       capGainsTax
@@ -172,8 +201,8 @@ export const dataFromFormValues = ({
     },
     rentData: {
       rentPricePerSM,
-        rentIncreasePerPeriod,
-        size
+      rentIncreasePerPeriod,
+      size
     },
     buyerData: {
       buyPricePerSM,
