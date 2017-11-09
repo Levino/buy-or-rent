@@ -6,6 +6,7 @@ import FixedCosts from './FixedCosts/index'
 import Head from './Head'
 import Intro from './Intro'
 import Scenarios from './Scenarios'
+import Imprint from './Imprint'
 const App = () =>
       <Container>
         <Head />
@@ -25,6 +26,11 @@ const App = () =>
         <Row>
           <Col>
             <DetailsTable />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Imprint/>
           </Col>
         </Row>
       </Container>

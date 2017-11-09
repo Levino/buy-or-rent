@@ -32,7 +32,7 @@ const PaymentsRepaymentPeriod = () => {
       result: true
     }
   ]
-  const Content = () => (<Table size="sm">
+  const Content = () => (<Table responsive={true} size="sm">
       <thead>
         <tr>
           <th scope="col">Verwendung</th>
@@ -70,7 +70,7 @@ const PaymentsDyingPeriod = ()  =>  {
       result: true
     }
   ]
-  const Content = ()  => <Table size="sm">
+  const Content = ()  => <Table  responsive={true} size="sm">
     <thead>
     <tr>
       <th scope="col">Verwendung</th>

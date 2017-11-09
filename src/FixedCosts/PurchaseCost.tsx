@@ -42,7 +42,7 @@ class PurchaseCost extends Component {
         result: true
       }
     ]
-    const Content = () => (<Table size="sm">
+    const Content = () => (<Table responsive={true} size="sm">
         <thead>
         <tr>
           <th scope="col">Posten</th>
