@@ -13,7 +13,7 @@ ReactGA.initialize('UA-109415206-1', {
 
 class BuyOrRent extends Component {
   componentDidMount() {
-    ReactGA.pageView(window.location.pathname)
+    ReactGA.pageview(window.location.pathname)
   }
   render() {
     return <App/>
