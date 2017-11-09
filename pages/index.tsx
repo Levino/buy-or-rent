@@ -5,10 +5,9 @@ import App from '../src/App'
 import ReactGA from 'react-ga'
 import { Component } from 'react'
 
-ReactGA.initialize('UA-109415206-1', {
-  gaOptions: {
-    anonymizeIp: true
-  }
+ReactGA.initialize('UA-109415206-1')
+ReactGA.set({
+  anonymizeIp: true
 })
 
 class BuyOrRent extends Component {
