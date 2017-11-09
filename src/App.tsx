@@ -9,7 +9,7 @@ import Scenarios from './Scenarios'
 import Imprint from './Imprint'
 import ReactGA from 'react-ga'
 if ( process.env.NODE_ENV === 'production' ) {
-  ReactGA.initialize('UA-109415206-1')
+  ReactGA.initialize('UA-109415206-1', {anonymizeIp: true})
 }
 const App = () =>
       <Container>
