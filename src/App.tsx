@@ -3,19 +3,12 @@ import { Container, Row, Col } from 'reactstrap'
 import DetailsTable from './DetailsTables'
 import Form from './Form'
 import Result from './Result/index'
-import Head from 'next/head'
+import Head from './Head'
 import Intro from './Intro'
 import Scenarios from './Scenarios'
 const App = () =>
       <Container>
-        <Head>
-          <meta charSet="utf-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <link
-            rel="stylesheet"
-            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
-          />
-        </Head>
+        <Head />
         <Intro />
         <Scenarios />
         <Row>
