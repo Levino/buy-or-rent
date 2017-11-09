@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Head from 'next/head'
 
-const BuyOrRentHead = () =>
+const BuyOrRentHead = () => (
   <div>
     <Head>
       <meta charSet="utf-8" />
@@ -18,5 +18,6 @@ const BuyOrRentHead = () =>
           }
         `}</style>
   </div>
+)
 
 export default BuyOrRentHead

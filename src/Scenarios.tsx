@@ -8,7 +8,7 @@ import {
 
 const Scenarios = () => {
   return <Row>
-    <Col md={6}>
+    <Col xs={12} sm={12} md={6}>
       <Card>
         <CardBlock>
           <CardTitle>
@@ -28,7 +28,7 @@ const Scenarios = () => {
         </CardBlock>
       </Card>
     </Col>
-    <Col md={6}>
+    <Col xs={12} sm={12} md={6}>
       <Card>
         <CardBlock>
           <CardTitle>
