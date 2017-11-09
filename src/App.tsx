@@ -9,7 +9,11 @@ import Scenarios from './Scenarios'
 import Imprint from './Imprint'
 import ReactGA from 'react-ga'
 
-ReactGA.initialize('UA-109415206-1', {anonymizeIp: true})
+ReactGA.initialize('UA-109415206-1', {
+  gaOptions: {
+    anonymizeIp: true
+  }
+})
 
 const App = () =>
       <Container>
