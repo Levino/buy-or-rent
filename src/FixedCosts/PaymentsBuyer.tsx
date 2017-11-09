@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Row, Col, Table } from 'reactstrap'
+import { Row, Col, Table, Card, CardBlock, CardTitle } from 'reactstrap'
 import {
   MonthlyLoanPayment, AnnualLoanPayment, AnnualInvestmentPayment,
   MonthlyInvestmentPayment, YearlyPaymentBuyer, MonthlyPaymentBuyer
@@ -44,11 +44,15 @@ const PaymentsRepaymentPeriod = () => {
         {entries.map((entry, key) => <TableRow key={key} {...entry} />)}
       </tbody>
     </Table>)
-  const Heading = () => <h3>Zahlungen Käufer Tilgungsphase</h3>
-  return (<Row><Col>
-    <Heading key="heading"/>
-    <Content key="content"/>
-   </Col></Row>)
+  const Heading = () => <span>Zahlungen Käufer Tilgungsphase</span>
+  return (<Card>
+    <CardBlock>
+      <CardTitle>
+        <Heading key="heading"/>
+      </CardTitle>
+      <Content key="content"/>
+    </CardBlock>
+  </Card>)
 }
 
 const PaymentsDyingPeriod = ()  =>  {
@@ -78,11 +82,15 @@ const PaymentsDyingPeriod = ()  =>  {
     {entries.map((entry, key) => <TableRow key={key} {...entry} />)}
     </tbody>
   </Table>
-  const Heading = ()  => <h3>Zahlungen Käufer Sterbephase</h3>
-  return <Row><Col>
-    <Heading key="heading"/>
-    <Content key="content"/>
-  </Col></Row>
+  const Heading = ()  => <span>Zahlungen Käufer Sterbephase</span>
+  return <Card>
+    <CardBlock>
+      <CardTitle>
+        <Heading key="heading"/>
+      </CardTitle>
+      <Content key="content"/>
+    </CardBlock>
+  </Card>
 }
 
 const PaymentsBuyer = () => <Row><Col>

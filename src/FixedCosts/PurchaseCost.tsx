@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Row, Col } from 'reactstrap'
+import { Table, Card, CardBlock, CardText, CardTitle } from 'reactstrap'
 import {
   NetPrice, GrossPrice, AbsolutePropertyPurchaseTax,
   AbsoluteBrokerFee, AbsoluteNotaryFee
@@ -12,20 +12,10 @@ interface ListEntryInterface {
   result?: boolean
 }
 
-class ListEntry extends Component<ListEntryInterface> {
-  render() {
-    const {title, Content, result} = this.props
-    return [
-      result && <hr style={{width: '100%', margin: 0, borderTop: '2px solid black'}} key="line"/>,
-      <dt key="title" className="col-md-8">{title}</dt>,
-      (
-        <dd style={{textAlign: 'right', fontWeight: result ? 'bold' : undefined}} key="value" className="col-md-4">
-          <Content/>
-        </dd>
-      )
-    ]
-  }
-}
+const TableRow = ({title, Content, result}) => (<tr>
+  <td style={{fontWeight: result ? 'bold' : 'normal' }} scope="row" key="title">{title}</td>
+  <td style={{textAlign: 'right', fontWeight: result ? 'bold' : 'normal' }} key="amount"><Content/></td>
+</tr>)
 
 class PurchaseCost extends Component {
   render() {
@@ -52,16 +42,26 @@ class PurchaseCost extends Component {
         result: true
       }
     ]
-    const Content = () => (<Row><Col>
-      <dl className="row">
-        {entries.map((entry, key) => <ListEntry key={key} {...entry} />)}
-      </dl>
-    </Col></Row>)
-    const Heading = () => <h3>Kaufkosten</h3>
-    return [
-      <Heading key="heading"/>,
+    const Content = () => (<Table size="sm">
+        <thead>
+        <tr>
+          <th scope="col">Posten</th>
+          <th style={{textAlign: 'right'}} scope="col">Betrag</th>
+        </tr>
+        </thead>
+        <tbody>
+        {entries.map((entry, key) => <TableRow key={key} {...entry} />)}
+        </tbody>
+      </Table>)
+    const Heading = () => `Kaufkosten`
+    return <Card>
+      <CardBlock>
+        <CardTitle>
+          <Heading key="heading"/>
+        </CardTitle>
       <Content key="content"/>
-    ]
+      </CardBlock>
+    </Card>
   }
 }
 

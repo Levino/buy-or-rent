@@ -101,7 +101,6 @@ export const calculateEquivalentYield = memoize(async (data: theData) => {
       const netWorthBuyer = periods[data.totalPeriods].buyerData.networth
       const netWorthTenant = periods[data.totalPeriods].tenantData.stockValue
       error = netWorthTenant - netWorthBuyer
-      console.log(error)
       if (error > 0) {
         upperLimit = approximationValue
       } else {
