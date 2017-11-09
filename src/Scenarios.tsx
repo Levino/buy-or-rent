@@ -40,7 +40,7 @@ const Scenarios = () => {
             welche um <RentIncreasePerYear /> pro Jahr steigt. Sie wenden monatlich die ersten <LoanYears/> Jahre <MonthlyPaymentBuyer/> und
             danach bis zu Ihrem Tod <MonthlyInvestmentPayment/> auf. Davon bezahlen Sie Ihre Miete und den Betrag der übrig bleibt
             legen Sie genau wie das Startkapital an bzw. entnehmen den Fehlbetrag zur Miete aus dem angelegten Kapital.
-            Wenn Ihre Anlageform eine Rendite von <EquivalentRate /> pro Jahr erziehlt und Sie nach <YearsToDeath/> sterben,
+            Wenn Ihre Anlageform eine Rendite von <EquivalentRate /> pro Jahr erziehlt und Sie nach <YearsToDeath/> Jahren sterben,
             können sich Ihre Erben über ein versteuertes Aktienpaket im Wert von <StockEndValue /> freuen.
           </CardText>
         </CardBlock>
