@@ -55,11 +55,7 @@ class RenderPercent extends Component<{ value: number }> {
   }
 }
 
-class RenderSize extends Component<{ value: number }> {
-  render() {
-    return `${this.props.value} m²`
-  }
-}
+const RenderSize = ({value}): any => `${value} m²`
 
 export const RentIncreasePerYear = connect(
   state => ({value: getResult(state).data.rentData.rentIncreasePerPeriod * 12})

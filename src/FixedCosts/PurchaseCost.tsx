@@ -1,18 +1,12 @@
 import * as React from 'react'
-import { Table, Card, CardBlock, CardText, CardTitle } from 'reactstrap'
+import { Table, Card, CardBlock, CardTitle } from 'reactstrap'
 import {
   NetPrice, GrossPrice, AbsolutePropertyPurchaseTax,
   AbsoluteBrokerFee, AbsoluteNotaryFee
 } from '../selectors'
 import { Component } from 'react'
 
-interface ListEntryInterface {
-  title: string
-  Content: any
-  result?: boolean
-}
-
-const TableRow = ({title, Content, result}) => (<tr>
+const TableRow = ({title, Content, result}: {title: string, Content: any, result?: boolean}) => (<tr>
   <td style={{fontWeight: result ? 'bold' : 'normal' }} scope="row" key="title">{title}</td>
   <td style={{textAlign: 'right', fontWeight: result ? 'bold' : 'normal' }} key="amount"><Content/></td>
 </tr>)
@@ -53,7 +47,7 @@ class PurchaseCost extends Component {
         {entries.map((entry, key) => <TableRow key={key} {...entry} />)}
         </tbody>
       </Table>)
-    const Heading = () => `Kaufkosten`
+    const Heading = ():any => `Kaufkosten`
     return <Card>
       <CardBlock>
         <CardTitle>

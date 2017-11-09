@@ -5,7 +5,7 @@ import {
   MonthlyInvestmentPayment, YearlyPaymentBuyer, MonthlyPaymentBuyer
 } from '../selectors'
 
-const TableRow = ({title, PerYear, PerMonth, result}) => <tr>
+const TableRow = ({title, PerYear, PerMonth, result}: {title: string, PerYear: any, PerMonth, result?: boolean}) => <tr>
   <td style={{fontWeight: result ? 'bold' : 'normal' }} scope="row" key="title">{title}</td>
   <td style={{textAlign: 'right', fontWeight: result ? 'bold' : 'normal' }} key="perMonth"><PerMonth/></td>
   <td style={{textAlign: 'right', fontWeight: result ? 'bold' : 'normal' }} key="perYear"><PerYear/></td>
