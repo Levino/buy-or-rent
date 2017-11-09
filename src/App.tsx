@@ -7,13 +7,6 @@ import Head from './Head'
 import Intro from './Intro'
 import Scenarios from './Scenarios'
 import Imprint from './Imprint'
-import ReactGA from 'react-ga'
-
-ReactGA.initialize('UA-109415206-1', {
-  gaOptions: {
-    anonymizeIp: true
-  }
-})
 
 const App = () =>
       <Container>
