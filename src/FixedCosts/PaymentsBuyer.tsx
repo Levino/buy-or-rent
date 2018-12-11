@@ -1,102 +1,102 @@
 import * as React from 'react'
-import { Row, Col, Table, Card, CardBlock, CardTitle } from 'reactstrap'
+import { Card, CardBody, CardTitle, Col, Row, Table } from 'reactstrap'
 import {
-  MonthlyLoanPayment, AnnualLoanPayment, AnnualInvestmentPayment,
-  MonthlyInvestmentPayment, YearlyPaymentBuyer, MonthlyPaymentBuyer
+  AnnualInvestmentPayment, AnnualLoanPayment, MonthlyInvestmentPayment,
+  MonthlyLoanPayment, MonthlyPaymentBuyer, YearlyPaymentBuyer
 } from '../selectors'
 
-const TableRow = ({title, PerYear, PerMonth, result}: {title: string, PerYear: any, PerMonth, result?: boolean}) => <tr>
-  <td style={{fontWeight: result ? 'bold' : 'normal' }} scope="row" key="title">{title}</td>
-  <td style={{textAlign: 'right', fontWeight: result ? 'bold' : 'normal' }} key="perMonth"><PerMonth/></td>
-  <td style={{textAlign: 'right', fontWeight: result ? 'bold' : 'normal' }} key="perYear"><PerYear/></td>
+const TableRow = ({ title, PerYear, PerMonth, result }: { title: string, PerYear: any, PerMonth, result?: boolean }) => <tr>
+  <td style={{ fontWeight: result ? 'bold' : 'normal' }} scope="row" key="title">{title}</td>
+  <td style={{ textAlign: 'right', fontWeight: result ? 'bold' : 'normal' }} key="perMonth"><PerMonth /></td>
+  <td style={{ textAlign: 'right', fontWeight: result ? 'bold' : 'normal' }} key="perYear"><PerYear /></td>
 </tr>
 
 const PaymentsRepaymentPeriod = () => {
   const entries = [
     {
-      title: 'Tilgung',
       PerMonth: MonthlyLoanPayment,
       PerYear: AnnualLoanPayment,
-        result: false
+      result: false,
+      title: 'Tilgung',
     },
     {
-      title: 'Investitionsrücklage',
-      PerYear: AnnualInvestmentPayment,
       PerMonth: MonthlyInvestmentPayment,
-        result: false
+      PerYear: AnnualInvestmentPayment,
+      result: false,
+      title: 'Investitionsrücklage',
     },
     {
-      title: 'Summe',
-      PerYear: YearlyPaymentBuyer,
       PerMonth: MonthlyPaymentBuyer,
-      result: true
-    }
+      PerYear: YearlyPaymentBuyer,
+      result: true,
+      title: 'Summe',
+    },
   ]
   const Content = () => (<Table responsive={true} size="sm">
-      <thead>
-        <tr>
-          <th scope="col">Verwendung</th>
-          <th style={{textAlign: 'right'}} scope="col">monatlich</th>
-          <th style={{textAlign: 'right'}} scope="col">jährlich</th>
-        </tr>
-      </thead>
-      <tbody>
-        {entries.map((entry, key) => <TableRow key={key} {...entry} />)}
-      </tbody>
-    </Table>)
+    <thead>
+      <tr>
+        <th scope="col">Verwendung</th>
+        <th style={{ textAlign: 'right' }} scope="col">monatlich</th>
+        <th style={{ textAlign: 'right' }} scope="col">jährlich</th>
+      </tr>
+    </thead>
+    <tbody>
+      {entries.map((entry, key) => <TableRow key={key} {...entry} />)}
+    </tbody>
+  </Table>)
   const Heading = () => <span>Zahlungen Käufer Tilgungsphase</span>
   return (<Card>
-    <CardBlock>
+    <CardBody>
       <CardTitle>
-        <Heading key="heading"/>
+        <Heading key="heading" />
       </CardTitle>
-      <Content key="content"/>
-    </CardBlock>
+      <Content key="content" />
+    </CardBody>
   </Card>)
 }
 
-const PaymentsDyingPeriod = ()  =>  {
+const PaymentsDyingPeriod = () => {
   const entries = [
     {
-      title: 'Investitionsrücklage',
-      PerYear: AnnualInvestmentPayment,
       PerMonth: MonthlyInvestmentPayment,
-        result: false
+      PerYear: AnnualInvestmentPayment,
+      result: false,
+      title: 'Investitionsrücklage',
     },
     {
-      title: 'Summe',
-      PerYear: AnnualInvestmentPayment,
       PerMonth: MonthlyInvestmentPayment,
-      result: true
-    }
+      PerYear: AnnualInvestmentPayment,
+      result: true,
+      title: 'Summe',
+    },
   ]
-  const Content = ()  => <Table  responsive={true} size="sm">
+  const Content = () => <Table responsive={true} size="sm">
     <thead>
-    <tr>
-      <th scope="col">Verwendung</th>
-      <th style={{textAlign: 'right'}} scope="col">monatlich</th>
-      <th style={{textAlign: 'right'}} scope="col">jährlich</th>
-    </tr>
+      <tr>
+        <th scope="col">Verwendung</th>
+        <th style={{ textAlign: 'right' }} scope="col">monatlich</th>
+        <th style={{ textAlign: 'right' }} scope="col">jährlich</th>
+      </tr>
     </thead>
     <tbody>
-    {entries.map((entry, key) => <TableRow key={key} {...entry} />)}
+      {entries.map((entry, key) => <TableRow key={key} {...entry} />)}
     </tbody>
   </Table>
-  const Heading = ()  => <span>Zahlungen Käufer Sterbephase</span>
+  const Heading = () => <span>Zahlungen Käufer Sterbephase</span>
   return <Card>
-    <CardBlock>
+    <CardBody>
       <CardTitle>
-        <Heading key="heading"/>
+        <Heading key="heading" />
       </CardTitle>
-      <Content key="content"/>
-    </CardBlock>
+      <Content key="content" />
+    </CardBody>
   </Card>
 }
 
 const PaymentsBuyer = () => <Row><Col>
-  <PaymentsRepaymentPeriod/>
+  <PaymentsRepaymentPeriod />
 </Col><Col>
-  <PaymentsDyingPeriod/>
-</Col></Row>
+    <PaymentsDyingPeriod />
+  </Col></Row>
 
 export default PaymentsBuyer

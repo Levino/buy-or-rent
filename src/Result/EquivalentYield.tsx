@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
 import { Component } from 'react'
-import { selectors as resultSelectors } from './redux'
+import { connect } from 'react-redux'
 import { selectors as calclatingSelectors } from '../reducers'
+import { selectors as resultSelectors } from './redux'
 
 const { getResult } = resultSelectors
 const { getCalculating } = calclatingSelectors
@@ -16,7 +16,7 @@ interface EquivalentYieldInterface {
 const percentString = value => value.toLocaleString('de-DE', {style: 'percent', minimumFractionDigits: 2})
 
 class EquivalentYield extends Component<EquivalentYieldInterface> {
-  render() {
+  public render() {
     const { equivalentYield, calculating } = this.props
     const result = [
       <h3 key="title">Äquivalenzrendite</h3>,
@@ -32,8 +32,8 @@ class EquivalentYield extends Component<EquivalentYieldInterface> {
 
 const mapStateToProps = (state) => {
   return {
+    calculating: getCalculating(state),
     equivalentYield: 12 * getResult(state).data.stockData.stockIncreasePerPeriod,
-    calculating: getCalculating(state)
   }
 }
 

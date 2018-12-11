@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Row, Col } from 'reactstrap'
+import { Col, Row } from 'reactstrap'
 const Intro = () => (
   <Row className="d-flex justify-content-center">
     <Col md={12} lg={8} xl={6}>

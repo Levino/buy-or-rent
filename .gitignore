@@ -25,3 +25,4 @@ pages/*.js
 pages/*.js.map
 src/**/*.js
 src/**/*.js.map
+.vscode

@@ -1,50 +1,50 @@
 import * as React from 'react'
-import {
-  GrossPrice, Equity, Loan
-} from '../selectors'
-import { Card, CardTitle, CardBlock, Table } from 'reactstrap'
 import { Component } from 'react'
-const TableRow = ({title, Content, result}: {title: string, Content: any, result?: boolean}) => (<tr>
-  <td style={{fontWeight: result ? 'bold' : 'normal' }} scope="row" key="title">{title}</td>
-  <td style={{textAlign: 'right', fontWeight: result ? 'bold' : 'normal' }} key="amount"><Content/></td>
+import { Card, CardBody, CardTitle, Table } from 'reactstrap'
+import {
+  Equity, GrossPrice, Loan
+} from '../selectors'
+const TableRow = ({ title, Content, result }: { title: string, Content: any, result?: boolean }) => (<tr>
+  <td style={{ fontWeight: result ? 'bold' : 'normal' }} scope="row" key="title">{title}</td>
+  <td style={{ textAlign: 'right', fontWeight: result ? 'bold' : 'normal' }} key="amount"><Content /></td>
 </tr>)
 
 class LoanOverview extends Component {
-  render () {
+  public render() {
     const entries = [
       {
+        Content: GrossPrice,
         title: 'Bruttopreis',
-        Content: GrossPrice
       },
       {
+        Content: Equity,
         title: 'Eigenkapital',
-        Content: Equity
       },
       {
-        title: 'Kredithöhe',
         Content: Loan,
-        result: true
-      }
+        result: true,
+        title: 'Kredithöhe',
+      },
     ]
     const Content = () => (<Table responsive={true} size="sm">
       <thead>
-      <tr>
-        <th scope="col">Posten</th>
-        <th style={{textAlign: 'right'}} scope="col">Betrag</th>
-      </tr>
+        <tr>
+          <th scope="col">Posten</th>
+          <th style={{ textAlign: 'right' }} scope="col">Betrag</th>
+        </tr>
       </thead>
       <tbody>
-      {entries.map((entry, key) => <TableRow key={key} {...entry} />)}
+        {entries.map((entry, key) => <TableRow key={key} {...entry} />)}
       </tbody>
     </Table>)
     const Heading = () => <span>Kredit</span>
     return <Card>
-      <CardBlock>
+      <CardBody>
         <CardTitle>
-          <Heading key="heading"/>
+          <Heading key="heading" />
         </CardTitle>
-        <Content key="content"/>
-      </CardBlock>
+        <Content key="content" />
+      </CardBody>
     </Card>
   }
 }

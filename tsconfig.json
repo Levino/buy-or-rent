@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "module": "esnext",
+    "outDir": "build/dist",
+    "module": "commonjs",
     "target": "es5",
     "lib": ["es6", "dom"],
     "sourceMap": true,
@@ -12,13 +13,15 @@
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noImplicitAny": false,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
-    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "pretty": true,
     "typeRoots": [
-      "node_modules/@types",
-      "./typings"
+      "./types",
+      "node_modules/@0xproject/typescript-typings/types",
+      "node_modules/@types"
     ]
   },
   "exclude": [
@@ -27,9 +30,6 @@
     "scripts",
     "acceptance-tests",
     "webpack",
-    "jest",
-    "src/setupTests.ts",
-    "next.config.js",
-    ".next"
+    "jest"
   ]
 }

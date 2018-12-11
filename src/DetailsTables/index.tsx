@@ -1,10 +1,10 @@
 import * as React from 'react'
-import DetailsTable from './DetailsTable'
 import { Component } from 'react'
-import { Row, Col } from 'reactstrap'
+import { Col, Row } from 'reactstrap'
+import DetailsTable from './DetailsTable'
 
 class DetailsTables extends Component {
-  render() {
+  public render() {
     return (
       <Row>
         <Col>

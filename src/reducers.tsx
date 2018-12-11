@@ -18,7 +18,7 @@ export const calculating = (state: boolean = false, action): boolean => {
 const getCalculating = (state): boolean => state.calculating
 
 export const selectors = {
-  getCalculating
+  getCalculating,
 }
 
 export default calculating
