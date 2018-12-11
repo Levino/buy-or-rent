@@ -1,11 +1,10 @@
 import * as React from 'react'
-import { getPeriods } from '../selectors'
 import { connect } from 'react-redux'
 import { MoneyString } from '../helperComponents'
-import { Component } from 'react'
+import { getPeriods } from '../selectors'
 import { TenantRowOwnProps } from './TenantRow'
 
-export interface BuyerRowInterface {
+export interface BuyerRowProps {
   period: number
   loanPayment: number
   loanAtEnd: number
@@ -15,49 +14,54 @@ export interface BuyerRowInterface {
   networth: number
 }
 
-class BuyerRow extends Component<BuyerRowInterface> {
-  render() {
-    const {
-      loanPayment,
-      loanAtBeginning,
-      loanAtEnd,
-      interest,
-      propertyValue,
-      networth
-    } = this.props
-    return [
-      <td key="loan" style={{textAlign: 'right'}}><MoneyString value={loanAtBeginning}/></td>,
-      <td key="loanPayment" style={{textAlign: 'right'}}><MoneyString value={loanPayment}/></td>,
-      <td key="interest" style={{textAlign: 'right'}}>
-        <MoneyString
-          value={interest}
-        />
-      </td>,
-      <td key="loanNextPeriod" style={{textAlign: 'right'}}><MoneyString value={loanAtEnd}/></td>,
-      <td
-        key="assetValuation"
-        style={{textAlign: 'right'}}
-      >
-        <MoneyString value={propertyValue}/>
-      </td>,
-      <td key="networth" style={{textAlign: 'right'}}><MoneyString value={networth}/>
-      </td>
-    ]
-  }
-}
+const BuyerRow: React.FunctionComponent<BuyerRowProps> = ({
+  loanPayment,
+  loanAtBeginning,
+  loanAtEnd,
+  interest,
+  propertyValue,
+  networth,
+}) => (
+    <React.Fragment>
+      {[
+        <td key="loan" style={{ textAlign: 'right' }}>
+          <MoneyString value={loanAtBeginning} />
+        </td>,
+        <td key="loanPayment" style={{ textAlign: 'right' }}>
+          <MoneyString value={loanPayment} />
+        </td>,
+        <td key="interest" style={{ textAlign: 'right' }}>
+          <MoneyString value={interest} />
+        </td>,
+        <td key="loanNextPeriod" style={{ textAlign: 'right' }}>
+          <MoneyString value={loanAtEnd} />
+        </td>,
+        <td key="assetValuation" style={{ textAlign: 'right' }}>
+          <MoneyString value={propertyValue} />
+        </td>,
+        <td key="networth" style={{ textAlign: 'right' }}>
+          <MoneyString value={networth} />
+        </td>]}
+    </React.Fragment>
+  )
 
-const mapStateToProps = (state, {period, periodGap}: TenantRowOwnProps ): BuyerRowInterface => {
+const mapStateToProps = (
+  state,
+  { period, periodGap }: TenantRowOwnProps
+): BuyerRowProps => {
   const periods = getPeriods(state)
   const lastPeriod = periods[period]
   const nextPeriod = periods[period + periodGap]
   return {
-    period,
-    loanPayment: nextPeriod.buyerData.totalPayments - lastPeriod.buyerData.totalPayments,
+    interest:
+      nextPeriod.buyerData.totalInterest - lastPeriod.buyerData.totalInterest,
     loanAtBeginning: lastPeriod.buyerData.loanAmount,
     loanAtEnd: nextPeriod.buyerData.loanAmount,
-    interest: nextPeriod.buyerData.totalInterest - lastPeriod.buyerData.totalInterest,
+    loanPayment:
+      nextPeriod.buyerData.totalPayments - lastPeriod.buyerData.totalPayments,
+    networth: nextPeriod.buyerData.networth,
+    period,
     propertyValue: nextPeriod.buyerData.propertyValue,
-    networth: nextPeriod.buyerData.networth
   }
 }
 

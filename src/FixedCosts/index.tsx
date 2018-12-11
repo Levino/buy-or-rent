@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { Row, Col } from 'reactstrap'
-import PurchaseCost from './PurchaseCost'
+import { Col, Row } from 'reactstrap'
 import Loan from './Loan'
 import PaymentsBuyer from './PaymentsBuyer'
+import PurchaseCost from './PurchaseCost'
 const Result = () => (
   <Row><Col md={12}>
     <PurchaseCost/>

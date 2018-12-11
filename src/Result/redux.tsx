@@ -1,19 +1,20 @@
-import { PeriodsArray, theData } from '../helpers'
+import { State } from 'src/store'
+import { Data, PeriodsArray } from '../helpers'
 
 const SAVE_RESULT = 'SAVE_RESULT'
 
 const result = (state = {
-  periods: {},
   data: {
+    buyerData: {
+      equity: 0,
+      priceIncreasePerPeriod: 0,
+    },
     loanData: {
       loanAmount: 0,
       loanPayment: 0,
     },
-    buyerData: {
-      priceIncreasePerPeriod: 0,
-      equity: 0
-    }
-  }
+  },
+  periods: {},
 }, action) => {
   if (action.type === SAVE_RESULT) {
     return action.value
@@ -25,18 +26,18 @@ export const actions = {
   saveResult(value: any) {
     return {
       type: SAVE_RESULT,
-      value
+      value,
     }
-  }
+  },
 }
 
-export type Result = {
-  data: theData
+export interface Result {
+  data: Data
   periods: PeriodsArray
 }
 
 export const selectors = {
-  getResult: (state): Result => state.result
+  getResult: (state: State): Result => state.result,
 }
 
 export default result

@@ -1,18 +1,19 @@
 import { connect } from 'react-redux'
 
-import {
-  loanAmount,
-  loanPaymentPerPeriod, PeriodsArray, theData
-} from './helpers'
+import * as React from 'react'
 import { MoneyString } from './helperComponents'
-import { Component } from 'react'
+import {
+  Data,
+  loanAmount, loanPaymentPerPeriod, PeriodsArray
+} from './helpers'
 import { selectors as resultSelectors } from './Result/redux'
-import { formValues } from './store/initialState'
+import { State } from './store'
+import { FormValues } from './store/initialState'
 
-const {getResult} = resultSelectors
+const { getResult } = resultSelectors
 
 const createMoneyComponent = selector => connect(state => (
-  {value: selector(state)}
+  { value: selector(state) }
 ))(
   MoneyString
 )
@@ -26,13 +27,13 @@ export const getMonthlyLoanPayment = (state, period: number) => {
 
 export const LoanAmount = createMoneyComponent(state => loanAmount(getResult(state).data))
 
-class RenderNumber extends Component<{ value: number }> {
-  render() {
+class RenderNumber extends React.Component<{ value: number }> {
+  public render() {
     return `${this.props.value}`
   }
 }
 
-export const LoanYears = connect(state => ({value: getResult(state).data.loanData.periods / 12}))(RenderNumber)
+export const LoanYears = connect((state: State) => ({ value: getResult(state).data.loanData.periods / 12 }))(RenderNumber)
 
 export const MonthlyLoanPayment = createMoneyComponent(getLoanPaymentInFirstPeriod)
 
@@ -42,27 +43,23 @@ export const AnnualLoanPayment = createMoneyComponent(getAnnualLoanPayment)
 
 export const getAnnualInvestmentPayment = state => {
   const {
-    investmentReserve
+    investmentReserve,
   } = getResult(state).data.buyerData
   return 12 * investmentReserve * getNetPrice(state)
 }
 
 export const AnnualInvestmentPayment = createMoneyComponent(getAnnualInvestmentPayment)
 
-class RenderPercent extends Component<{ value: number }> {
-  render() {
-    return `${(this.props.value * 100).toFixed(2)} %`
-  }
-}
+const RenderPercent: React.FunctionComponent<{ value: number }> = ({ value }) => <React.Fragment>{`${(value * 100).toFixed(2)} %`}</React.Fragment>
 
-const RenderSize = ({value}): any => `${value} m²`
+const RenderSize = ({ value }): any => `${value} m²`
 
 export const RentIncreasePerYear = connect(
-  state => ({value: getResult(state).data.rentData.rentIncreasePerPeriod * 12})
+  (state: State) => ({ value: getResult(state).data.rentData.rentIncreasePerPeriod * 12 })
 )(RenderPercent)
 
 export const PropertyValueIncreasePerYear =
-  connect(state => ({value: getResult(state).data.buyerData.yieldPerPeriod * 12}))(RenderPercent)
+  connect((state: State) => ({ value: getResult(state).data.buyerData.yieldPerPeriod * 12 }))(RenderPercent)
 
 const getMonthlyInvestmentPayment = state => getAnnualInvestmentPayment(state) / 12
 
@@ -71,9 +68,9 @@ export const RentPerMonth = createMoneyComponent(state => {
     data: {
       rentData: {
         size,
-        rentPricePerSM
-      }
-    }
+        rentPricePerSM,
+      },
+    },
   } = getResult(state)
   return size * rentPricePerSM
 })
@@ -83,7 +80,7 @@ export const MonthlyInvestmentPayment = createMoneyComponent(getMonthlyInvestmen
 export const getNetPrice = (state) => {
   const {
     buyPricePerSM,
-    size
+    size,
   } = getResult(state).data.buyerData
   return buyPricePerSM * size
 }
@@ -103,7 +100,7 @@ export const GrossPrice = createMoneyComponent(grossPrice)
 
 export const getYearlyPaymentBuyer = state => [
   getAnnualInvestmentPayment,
-  getAnnualLoanPayment
+  getAnnualLoanPayment,
 ].reduce((acc, selector) => acc + selector(state), 0)
 
 export const YearlyPaymentBuyer = createMoneyComponent(getYearlyPaymentBuyer)
@@ -112,20 +109,20 @@ const getMonthlyPaymentBuyer = state => getYearlyPaymentBuyer(state) / 12
 
 export const MonthlyPaymentBuyer = createMoneyComponent(getMonthlyPaymentBuyer)
 
-export const PropertySize = connect(state => ({
-  value: getResult(state).data.rentData.size
+export const PropertySize = connect((state: State) => ({
+  value: getResult(state).data.rentData.size,
 }))(RenderSize)
 
 export const getTotalPeriods = state => getResult(state).data.totalPeriods
 
 const getEquity = state => getResult(state).data.buyerData.equity
 
-export const YearsToDeath = connect(state => ({value: getResult(state).data.totalPeriods / 12}))(RenderNumber)
+export const YearsToDeath = connect((state: State) => ({ value: getResult(state).data.totalPeriods / 12 }))(RenderNumber)
 
 export const Equity = createMoneyComponent(getEquity)
 
-export const EquivalentRate = connect(state => ({value: getResult(state).data.stockData.stockIncreasePerPeriod * 12}))
-(RenderPercent)
+export const EquivalentRate = connect((state: State) => ({ value: getResult(state).data.stockData.stockIncreasePerPeriod * 12 }))
+  (RenderPercent)
 
 export const getLoan = state => grossPrice(state) - getEquity(state)
 
@@ -162,9 +159,9 @@ const getAbsoluteNotaryFee = state => {
 export const StockEndValue = createMoneyComponent(state => {
   const {
     data: {
-      totalPeriods
+      totalPeriods,
     },
-    periods
+    periods,
   } = getResult(state)
   return periods[totalPeriods].tenantData.stockValue
 })
@@ -172,49 +169,49 @@ export const StockEndValue = createMoneyComponent(state => {
 export const AbsoluteNotaryFee = createMoneyComponent(getAbsoluteNotaryFee)
 
 export const dataFromFormValues = ({
-                                     interestRate,
-                                     capGainsTax,
-                                     equity,
-                                     rentPricePerSM,
-                                     buyPricePerSM,
-                                     periods,
-                                     investmentReserve,
-                                     size,
-                                     brokerFee,
-                                     notaryFee,
-                                     propertyPurchaseTax,
-                                     timeToDeath,
-                                     equityPriceIncrease,
-                                     rentIncreasePerPeriod
-                                   }: formValues, equivalentRate?: number): theData => {
+  interestRate,
+  capGainsTax,
+  equity,
+  rentPricePerSM,
+  buyPricePerSM,
+  periods,
+  investmentReserve,
+  size,
+  brokerFee,
+  notaryFee,
+  propertyPurchaseTax,
+  timeToDeath,
+  equityPriceIncrease,
+  rentIncreasePerPeriod,
+}: FormValues, equivalentRate?: number): Data => {
   return {
-    taxData: {
-      capGainsTax
+    buyerData: {
+      brokerFee,
+      buyPricePerSM,
+      equity,
+      investmentReserve,
+      notaryFee,
+      propertyPurchaseTax,
+      size,
+      yieldPerPeriod: equityPriceIncrease,
+    },
+    loanData: {
+      interestRate,
+      periods,
+    },
+    rentData: {
+      rentIncreasePerPeriod,
+      rentPricePerSM,
+      size,
     },
     stockData: {
       equity,
-      stockIncreasePerPeriod: equivalentRate || 0
+      stockIncreasePerPeriod: equivalentRate || 0,
     },
-    rentData: {
-      rentPricePerSM,
-      rentIncreasePerPeriod,
-      size
+    taxData: {
+      capGainsTax,
     },
-    buyerData: {
-      buyPricePerSM,
-      size,
-      brokerFee,
-      notaryFee,
-      propertyPurchaseTax,
-      yieldPerPeriod: equityPriceIncrease,
-      investmentReserve,
-      equity
-    },
-    loanData: {
-      periods,
-      interestRate
-    },
-    totalPeriods: timeToDeath
+    totalPeriods: timeToDeath,
   }
 }
 
